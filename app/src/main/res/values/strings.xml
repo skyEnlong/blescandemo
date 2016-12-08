@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">BleScanDemo</string>
+    <string name="state_light">非常亮态</string>
+    <string name="state_keep_light">常亮态</string>
+    <string name="account_type">com.example.enlong.blescandemo.AccountSyncService</string>
+</resources>

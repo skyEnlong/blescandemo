@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- rope skipping -->
+    <color name="ropeskipping_gray">#7b7b7b</color>
+    <color name="ropeskipping_green">#709e18</color>
+    <color name="ropeskipping_blue">#2a8acd</color>
+    <!-- end -->
+
+    <color name="history_item_title">#666666</color>
+    <color name="speed_line_color">#3058b3</color>
+    <color name="altitude_line_color">#feae03</color>
+    <color name="calibration_line_color">#999999</color>
+    <color name="color_black">#000000</color>
+    <color name="listitem_border_normal">#bababa</color>
+    <color name="listitem_border_press">#bababa</color>
+    <color name="listitem_background_normal_start">#ffffff</color>
+    <color name="listitem_background_normal_center">#ffffff</color>
+    <color name="listitem_background_normal_end">#ffffff</color>
+    <color name="listitem_background_press_start">#6db529</color>
+    <color name="listitem_background_press_center">#6db529</color>
+    <color name="listitem_background_press_end">#6db529</color>
+    <color name="listitem_background_press_gray_start">#e5e5e5</color>
+    <color name="listitem_background_press_gray_center">#e5e5e5</color>
+    <color name="listitem_background_press_gray_end">#e5e5e5</color>
+    <color name="calories_to_food_white">#cccccc</color>
+    <color name="calories_to_food_red">#eb2626</color>
+    <color name="weekday_background_check">#fbb021</color>
+    <color name="weekday_background_normal">#ada7a7</color>
+
+    <drawable name="white">#ffffff</drawable>
+    <drawable name="blue">#2A00FF</drawable>
+    <drawable name="green">#709e18</drawable>
+    <drawable name="red">#eb2626</drawable>
+    <drawable name="orange">#eea415</drawable>
+
+    <color name="transparent">#9000</color>
+    <color name="white">#ffffff</color>
+    <color name="listviewtransparent">#00000000</color>
+    <color name="gold">#b89766</color>
+
+    <drawable name="darkgray">#999999</drawable>
+    <drawable name="translucent_background">#d0000000</drawable>
+
+    <color name="itembackground">#588d0a</color>
+
+    <drawable name="translucent">#00000000</drawable>
+    <drawable name="deepdarkgray">#383838</drawable>
+
+    <color name="codoon_black">#333333</color>
+    <color name="codoon_lightblack">#353535</color>
+    <color name="codoon_deepblack">#4e4e4e</color>
+    <color name="codoon_gray">#999999</color>
+    <color name="codoon_darkgray">#777777</color>
+    <color name="codoon_time_gray">#989898</color>
+    <color name="codoon_item_gray">#9a9a9a</color>
+    <color name="codoon_green">#6cbb52</color>
+    <color name="codoon_verylightgreen">#f0f8ed</color>
+    <color name="codoon_lightgreen">#97cf61</color>
+    <color name="codoon_white">#ffffff</color>
+    <color name="codoon_dark_white">#f8f8f8</color>
+    <color name="codooon_transparent">#00000000</color>
+    <color name="codoon_yellow">#f0b81e</color>
+    <color name="codoon_red">#e84e3d</color>
+    <color name="codoon_orange">#fecb00</color>
+    <color name="codoon_deepblue">#018dc4</color>
+    <color name="codoon_mild_color">#fbaf5d</color>
+    <color name="codoon_moderation_color">#ff7200</color>
+    <color name="codoon_strongly_color">#ff4e00</color>
+    <color name="codoon_sleep_color">#115cbd</color>
+    <color name="codoon_deepsleep_color">#2771cd</color>
+    <color name="codoon_lightsleep_color">#43a5e7</color>
+    <color name="codoon_wakeup_color">#f7c469</color>
+    <color name="codoon_searchbar_color">#dadada</color>
+    <color name="codoon_window_background">#f7f7f7</color>
+    <color name="codoon_split">#e4e4e4</color>
+    <color name="codoon_split_edge">#d9d9d9</color>
+    <color name="codoon_activity_list_black">#666666</color>
+    <color name="codoon_activity_deadline">#f09a1e</color>
+    <color name="codoon_activity_over">#b1b1b0</color>
+    <color name="codoon_hint">#dadada</color>
+    <color name="codoon_activity_deadline_translucent">#e0f09a1e</color>
+    <color name="codoon_activity_over_translucent">#e0b1b1b0</color>
+    <color name="codoon_green_translucent">#e06db529</color>
+    <color name="codoon_white_translucent">#1e000000</color>
+    <color name="login_background">#eff0f0</color>
+    <color name="codoon_bg_item_gray">#f9f9f9</color>
+
+    <drawable name="codoon_black">#292936</drawable>
+    <drawable name="codoon_white">#ffffff</drawable>
+    <drawable name="codoon_deeporange">#e52a2a</drawable>
+    <drawable name="codooon_transparent">#00000000</drawable>
+    <drawable name="codoon_lightblack">#353535</drawable>
+    <drawable name="codoon_deepdarkgray">#4C5F4C</drawable>
+    <drawable name="codoon_orange">#f19e00</drawable>
+    <drawable name="codoon_gray">#999999</drawable>
+    <drawable name="codoon_green">#2aba66</drawable>
+
+    <color name="codoon_dark_translucent">#4B000000</color>
+    <color name="codoon_group_backgroud">#ededf3</color>
+    <color name="codoon_group_tags_backgroud">#818181</color>
+    <color name="codoon_group_members_backgroud">#e2e2e2</color>
+    <color name="codoon_group_dialog_title">#f4f4f4</color>
+    <color name="codoon_group_dialog_line">#cdcdcd</color>
+    <color name="codoon_group_dialog_button">#3f3f3f</color>
+    <color name="codoon_contact_default_bg">#d9e2e1</color>
+    <color name="color_454545">#454545</color>
+    <color name="color_8a8989">#8a8989</color>
+    <color name="color_4395fb">#4395fb</color>
+    <color name="color_ededed">#ededed</color>
+    <color name="misc_title_bg">#ece8e5</color>
+    <color name="misc_title_light">#f89900</color>
+    <color name="color_cacaca">#cacaca</color>
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="transparent_blue_light">#3e33b5e5</color>
+    <color name="divide_line">#d1d1d1</color>
+    <color name="codoon_back_line_color">#90cb5d</color>
+    <color name="codoon_chart_background">#488d35</color>
+    
+    <color name="codoon_black_color">#313131</color>
+    <color name="codoon_white_color">#ffffff</color>
+    <color name="codoon_green_color">#2aba66</color>
+    <color name="codoon_lightgreen_color">#97cf61</color>
+    <color name="codoon_darkgreen_color">#62a325</color>
+    <color name="codoon_darkgray_color">#6e6e6e</color>
+    <color name="codoon_lightgray_color">#858585</color>
+    <color name="codoon_orange_color">#f09a1e</color>
+
+</resources>

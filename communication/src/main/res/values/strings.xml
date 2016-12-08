@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CodoonPayTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="str_connect_success">连接成功!</string>
+    <string name="union_str_init_ing">UPTsmAddon init failed</string>
+    <string name="union_str_connect_failed">UPTsmAddon connect failed</string>
+
+    <string name="btn_label_init">INIT</string>
+    <string name="btn_label_getpubkey">Get pub key</string>
+    <string name="btn_label_exchangekey">Exchange Key</string>
+    <string name="btn_label_getseid">获取SEID</string>
+    <string name="btn_label_getassociatedapp">获取已关联应用</string>
+    <string name="btn_label_getseappList">se应用列表查询</string>
+    <string name="btn_label_getappletlist">应用列表查询</string>
+    <string name="btn_label_getappletstatus">应用状态查询</string>
+    <string name="btn_label_getappletdetails">应用详情查询</string>
+    <string name="btn_label_gettranselements">交易要素获取</string>
+    <string name="btn_label_appdownloadapply">应用下载申请</string>
+    <string name="btn_label_downloadapplet">应用下载</string>
+    <string name="btn_label_deleteapplet">应用删除</string>
+    <string name="btn_label_getauthcode">获取短信验证码</string>
+    <string name="btn_label_getaccountinfo">获取账户信息</string>
+    <string name="btn_label_getaccountmount">获取账户余额</string>
+    <string name="btn_label_setdefaultcard">设置默认卡</string>
+    <string name="btn_label_getdefaultcard">获取默认卡</string>
+
+    <string name="btn_label_openchannel">打开逻辑通道</string>
+    <string name="btn_label_sendapdu">发送APDU</string>
+    <string name="btn_label_closechannel">关闭APDU</string>
+    <string name="btn_label_gettransrecord">获取交易记录</string>
+    <string name="btn_label_ecashtopup">圈存</string>
+    <string name="btn_label_quit">退出</string>
+    <string name="str_start_search">点击开始搜索</string>
+    <string name="str_connect_time_out">连接超时</string>
+    <string name="str_state_searching">正在搜索中</string>
+    <string name="str_state_connecting">连接中..</string>
+    <string name="str_update_time_success">更新时间成功</string>
+    <string name="str_update_clock_success">更新闹铃成功</string>
+    <string name="str_get_battery">得到电量</string>
+    <string name="str_clear_data_success">清楚数据成功</string>
+    <string name="str_update_unser_info_success">更新个人信息成功</string>
+    <string name="str_time_out">指令超时</string>
+    <string name="str_bind_union_success">绑定银联服务success</string>
+    <string name="str_hint_input_cash">请输入金额</string>
+    <string name="str_hint_input_code">请输入密码</string>
+    <string name="str_hint_bind_band">绑定手环</string>
+    <string name="str_get_device_info">读取卡信息</string>
+    <string name="str_union_get_card_info">银联（读取卡信息）</string>
+    <string name="str_union_init">银联调用初始化</string>
+
+</resources>

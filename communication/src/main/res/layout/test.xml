@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/bind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="绑定" />
+
+    <Button
+        android:id="@+id/updateUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更新用户信息" />
+
+    <Button
+        android:id="@+id/updateGoal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更新目标" />
+
+    <Button
+        android:id="@+id/updateHeart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置心率预警" />
+
+    <Button
+        android:id="@+id/getData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="获取数据" />
+
+</LinearLayout>

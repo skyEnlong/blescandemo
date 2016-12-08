@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginTop="15dip"
+        android:hint="请输入发送指令内容"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip" />
+
+
+    <Button
+        android:id="@+id/send_input"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="20dip"
+        android:layout_marginLeft="50dip"
+        android:layout_marginRight="50dip"
+        android:background="@drawable/button_scan"
+        android:text="发送" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:text="咕咚指令测试："
+        android:textSize="12dp"
+        android:paddingLeft="10dip"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_height="50dip">
+        <Button
+            android:id="@+id/bind_open_channel"
+            android:text="apdu"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+
+            android:layout_height="50dip" />
+
+        <Button
+            android:id="@+id/device_init"
+            android:text="初始化"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="50dip" />
+
+        <Button
+            android:id="@+id/is_se"
+            android:text="isSE"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_height="50dip">
+
+        <Button
+            android:id="@+id/get_data"
+            android:text="运动数据"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/up_time"
+            android:text="更新时间"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/update_userinfo2"
+            android:text="更新信息2"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_height="50dip">
+
+        <Button
+            android:id="@+id/get_user_info"
+            android:text="读取用户信息"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/get_user_info2"
+            android:text="读取BTC_INFO"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:text="receive:" />
+
+    <TextView
+        android:id="@+id/receive_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip" />
+</LinearLayout>

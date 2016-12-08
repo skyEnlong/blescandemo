@@ -1,0 +1,310 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textApduResp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="3"
+            android:text="result:" />
+
+        <EditText
+            android:id="@+id/input_account"
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:hint="@string/str_hint_input_cash"
+            android:inputType="numberDecimal"
+            android:maxLength="7" />
+
+        <TextView
+            android:id="@+id/input_code"
+            android:layout_width="match_parent"
+            android:layout_height="40dip"
+            android:layout_marginTop="10dip"
+            android:gravity="center_vertical"
+            android:hint="@string/str_hint_input_code"
+            android:paddingLeft="10dip" />
+
+        <Button
+            android:id="@+id/btn_bind_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/str_hint_bind_band"
+            android:visibility="gone" >
+        </Button>
+
+        <Button
+            android:id="@+id/btn_get_device_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/str_get_device_info"
+            android:visibility="gone" >
+        </Button>
+
+        <Button
+            android:id="@+id/btn_init"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/btn_label_init" >
+        </Button>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_getassociatedapp"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getassociatedapp" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_getseappList"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getseappList"
+                android:visibility="gone" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_getappletlist"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getappletlist"
+                android:visibility="gone" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_getappletdetails"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getappletdetails"
+                android:visibility="gone" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_gettranselements"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_gettranselements" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_appdownloadapply"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_appdownloadapply" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_downloadapplet"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_downloadapplet" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_deleteapplet"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_deleteapplet" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_getauthcode"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getauthcode" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_getaccountinfo"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getaccountinfo" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_getaccountmount"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getaccountmount" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_setdefaultcard"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_setdefaultcard" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_getdefaultcard"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getdefaultcard" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_openchannel"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_openchannel" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_sendapdu"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_sendapdu" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_closechannel"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_closechannel" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_gettransrecord"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_gettransrecord" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_getseid"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_getseid" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_quit"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/btn_label_quit" >
+            </Button>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <Button
+                android:id="@+id/btn_test_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/str_union_get_card_info" >
+            </Button>
+
+            <Button
+                android:id="@+id/btn_test_init"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/str_union_init" >
+            </Button>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_ecashtopup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_label_ecashtopup" >
+        </Button>
+    </LinearLayout>
+
+</ScrollView>
