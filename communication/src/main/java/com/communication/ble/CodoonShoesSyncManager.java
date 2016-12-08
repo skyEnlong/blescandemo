@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Message;
 import android.util.SparseArray;
 
+import com.communication.bean.CodoonShoesMinuteModel;
 import com.communication.bean.CodoonShoesModel;
 import com.communication.common.BaseCommand;
 import com.communication.common.BaseCommandHelper;
@@ -429,6 +430,11 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
                 int total = byteBuffer.getInt();
                 mICodoonShoesCallBack.onGetTotalRun(total);
+                break;
+
+            case CodoonShoesCommand.RES_RUN_STATE_DATA:
+                CodoonShoesMinuteModel model = mParseHelper.parseMinutePercents(resData);
+                mICodoonShoesCallBack.onGetRunState(model);
                 break;
 
         }

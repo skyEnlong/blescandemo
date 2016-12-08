@@ -21,7 +21,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by enlong on 16/10/18.
  */
-public class SearchService extends Service  implements OnDeviceSearch {
+public class SearchService extends Service  implements OnDeviceSearch<ParsedAd> {
     private BleScanMananfer mScanner;
     private int currentValue = 0;
     private int start = 0;

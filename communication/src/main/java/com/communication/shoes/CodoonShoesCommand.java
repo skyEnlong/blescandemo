@@ -1,10 +1,12 @@
 package com.communication.shoes;
 
+import com.communication.common.BaseCommand;
+
 /**
  * Created by enlong on 2016/12/7.
  */
 
-public class CodoonShoesCommand {
+public class CodoonShoesCommand extends BaseCommand{
 
     /**准备同步数据命令**/
     public static final int CODE_READY_DATA = 0x0D;
@@ -41,5 +43,9 @@ public class CodoonShoesCommand {
     /**读取总里程**/
     public static final int CODE_SHOES_TOTAL_RUN = 0x69;
     public static final int RES_SHOES_TOTAL_RUN = 0xE9;
+
+    /**读取跑步状态**/
+    public static final int CODE_RUN_STATE_DATA = 0x83;
+    public static final int RES_RUN_STATE_DATA = 0x03;
 
 }

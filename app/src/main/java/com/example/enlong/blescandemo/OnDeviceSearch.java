@@ -3,7 +3,7 @@ package com.example.enlong.blescandemo;
 /**
  * Created by enlong on 16/9/27.
  */
-public interface OnDeviceSearch {
+public interface OnDeviceSearch<T> {
 
-     void onDeviceSearch(ParsedAd dev);
+     void onDeviceSearch(T dev);
 }

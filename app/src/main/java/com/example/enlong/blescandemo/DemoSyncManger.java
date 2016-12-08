@@ -20,11 +20,12 @@ import de.greenrobot.event.EventBus;
  * Created by enlong on 2016/12/8.
  */
 
-public class DemoSyncManger implements ICodoonShoesCallBack{
+public class DemoSyncManger implements ICodoonShoesCallBack {
 
     private CodoonShoesSyncManager syncManager;
     private CodoonHealthDevice device;
-    public DemoSyncManger(Context mContext){
+
+    public DemoSyncManger(Context mContext) {
         syncManager = new CodoonShoesSyncManager(mContext, this);
     }
 
@@ -67,20 +68,27 @@ public class DemoSyncManger implements ICodoonShoesCallBack{
     @Override
     public void onGetShoesState(CodoonShoesState codoonShoesState) {
         MsgEvent event = new MsgEvent();
-        event.msg = "跑鞋状态："+ codoonShoesState.toString();
+        event.msg = "跑鞋状态：" + codoonShoesState.toString();
         EventBus.getDefault().post(event);
     }
 
     @Override
     public void onGetTotalRun(int totalRun) {
         MsgEvent event = new MsgEvent();
-        event.msg = "跑鞋总距离："+ totalRun;
+        event.msg = "跑鞋总距离：" + totalRun;
         EventBus.getDefault().post(event);
     }
 
     @Override
     public void onGetRunSports(List<CodoonShoesModel> ls) {
 
+    }
+
+    @Override
+    public void onGetRunState(CodoonShoesMinuteModel model) {
+        MsgEvent event = new MsgEvent();
+        event.msg = "跑步姿态数据：" + model.toString();
+        EventBus.getDefault().post(event);
     }
 
     @Override
@@ -105,9 +113,9 @@ public class DemoSyncManger implements ICodoonShoesCallBack{
     @Override
     public void onGetDeviceID(String deviceID) {
         MsgEvent event = new MsgEvent();
-        String guabo =  GpsBandParseUtil.getDeviceId(device.manufacturer);
-        event.msg = "获取ID：" + deviceID + " 广播ID：" +guabo
-               + " equal ? " +deviceID.equals(guabo);
+        String guabo = GpsBandParseUtil.getDeviceId(device.manufacturer);
+        event.msg = "获取ID：" + deviceID + " 广播ID：" + guabo
+                + " equal ? " + deviceID.equals(guabo);
         EventBus.getDefault().post(event);
     }
 
@@ -199,8 +207,16 @@ public class DemoSyncManger implements ICodoonShoesCallBack{
 
     }
 
-    public void start(com.communication.bean.CodoonHealthDevice device){
+    public void start(com.communication.bean.CodoonHealthDevice device) {
         this.device = device;
         syncManager.startDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.address));
+    }
+
+    public void writeCommand(byte[] data){
+        MsgEvent event = new MsgEvent();
+        event.msg = CommonUtils.convertByteToHexString(data);
+        EventBus.getDefault().post(event);
+
+        syncManager.writeDataToDevice(data);
     }
 }

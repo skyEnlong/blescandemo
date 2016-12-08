@@ -1,5 +1,6 @@
 package com.communication.ble;
 
+import com.communication.bean.CodoonShoesMinuteModel;
 import com.communication.bean.CodoonShoesModel;
 import com.communication.bean.CodoonShoesState;
 import com.communication.data.ISyncDataCallback;
@@ -49,4 +50,8 @@ public interface ICodoonShoesCallBack extends ISyncDataCallback {
 
     /**获取到的start-end模式的运动**/
     void onGetRunSports(List<CodoonShoesModel> ls);
+
+
+    /**读取跑步姿态数据**/
+    void onGetRunState(CodoonShoesMinuteModel model);
 }

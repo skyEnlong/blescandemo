@@ -30,8 +30,12 @@ public class CodoonShoesParseHelper {
 
     private static final String TAG = "ble_parse";
 
-    final static int flagCount = 8;
 
+    /**
+     * 解析详情跑步数据
+     * @param bytes
+     * @return
+     */
     public List<CodoonShoesModel> parseData(byte[] bytes) {
         if (null == bytes || bytes.length < 24) return null;
         List<CodoonShoesModel> models = new ArrayList<>();
@@ -176,6 +180,11 @@ public class CodoonShoesParseHelper {
         return -1;
     }
 
+    /**
+     * 解析详情数据每分钟的数据
+     * @param arr
+     * @return
+     */
     private CodoonShoesMinuteModel parseMinuteModel(byte[] arr) {
 
         CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
@@ -190,6 +199,29 @@ public class CodoonShoesParseHelper {
         return model;
     }
 
+
+    /**
+     * 解析每分钟跑步数据的百分比
+     * @param arr
+     * @return
+     */
+    public CodoonShoesMinuteModel parseMinutePercents(byte[] arr){
+        CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
+        ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
+        model.step = byteBuffer.getShort() & 0xff;
+        model.inFootCount = byteBuffer.getChar() & 0xff;
+        model.outFootCount = byteBuffer.getChar() & 0xff;
+        model.frontOnStep = byteBuffer.getChar() & 0xff;
+        model.backOnStep = byteBuffer.getChar() & 0xff;
+        model.cachPower = byteBuffer.getShort() & 0xff;
+        return model;
+    }
+
+    /**
+     * 解析汇总数据
+     * @param model
+     * @param arr
+     */
     public void parseTotalMode(CodoonShoesModel model, byte[] arr) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
         model.total_dis = byteBuffer.getInt() / 10.0f;
@@ -205,6 +237,12 @@ public class CodoonShoesParseHelper {
         }
     }
 
+
+    /**
+     * 解析跑鞋状态
+     * @param bytes
+     * @return
+     */
     public static CodoonShoesState parseState(byte[] bytes) {
         CodoonShoesState state = new CodoonShoesState();
         state.sportState = bytes[0] & 0xff;
@@ -258,6 +296,12 @@ public class CodoonShoesParseHelper {
         return mCalendar.getTimeInMillis();
     }
 
+
+    /**
+     * 找到开始状态的帧数
+     * @param datas
+     * @return
+     */
     public int findStartTags(byte[] datas){
         int result = findFlag(FLAG_START, datas, 0 , datas.length);
 

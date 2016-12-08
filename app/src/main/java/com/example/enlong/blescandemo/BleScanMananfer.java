@@ -49,7 +49,7 @@ public class BleScanMananfer {
 
                     parseDat.address = device.getAddress();
 
-                    if(null != ca) ca.onDeviceSearch(parseDat);
+                    if(null != ca) ca.onDeviceSearch(device1);
                 }
 
 
