@@ -9,7 +9,7 @@ public class TimeoutCheck {
 
     private boolean isConnecting=false;
 
-    private int mTryConnectCounts = 0;
+    private int mTryConnectCounts = 1;
 
     private ITimeoutCallback mCallback;
 

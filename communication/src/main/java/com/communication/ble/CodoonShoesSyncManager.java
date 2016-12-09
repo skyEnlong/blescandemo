@@ -16,7 +16,6 @@ import com.communication.data.DeviceUpgradeCallback;
 import com.communication.gpsband.GpsBandParseUtil;
 import com.communication.shoes.CodoonShoesCommand;
 import com.communication.shoes.CodoonShoesParseHelper;
-import com.communication.shoes.ShoseCommand;
 import com.communication.shoes.ShoseUpGradeMangaer;
 import com.communication.util.CodoonEncrypt;
 
@@ -40,8 +39,8 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     protected ByteArrayOutputStream mBaos;
     private boolean isStartBoot;
 
-    private  SparseArray runDatas;
-    private  SparseArray stepDatas;
+    private SparseArray runDatas;
+    private SparseArray stepDatas;
 
     private CodoonShoesParseHelper mParseHelper;
     /**
@@ -80,6 +79,8 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     private int lastParseFrame = -1;
 
 
+    private int checkFrameCount = FRAME_BLOCK;
+
     /**
      * @param mContext
      * @param mCallBack can't be null
@@ -99,7 +100,6 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     }
 
 
-
     protected BaseBleManager initBleManager() {
         bleManager = new CodoonShoesBleManger(mContext);
 
@@ -110,18 +110,8 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     }
 
 
-    private void getShoseDataByFrame(int shoseDataIndex) {
-        byte[] bytes = new byte[]{(byte)((shoseDataIndex >> 8) & 0xff),
-                (byte)(shoseDataIndex & 0xff)
-        };
-        writeDataToDevice(commandHelper.getCommand(
-                ShoseCommand.CODE_SHOES_DETAIL,
-                bytes));
-
-    }
-
     public void stopUpgrade() {
-        if(null != mShoseUpGradeMangaer) mShoseUpGradeMangaer.stop();
+        if (null != mShoseUpGradeMangaer) mShoseUpGradeMangaer.stop();
         isStartBoot = false;
 
         bleManager.setWriteCallback(this);
@@ -135,7 +125,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         mHandler.removeMessages(SEND_DATA);
         lastData = null;
         mTimeoutCheck.stopCheckTimeout();
-        if(null != mShoseUpGradeMangaer){
+        if (null != mShoseUpGradeMangaer) {
             mShoseUpGradeMangaer.stop();
             mShoseUpGradeMangaer = null;
         }
@@ -143,12 +133,25 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 upgradeCallback, bleManager, mICodoonShoesCallBack);
 
         mShoseUpGradeMangaer.setUpgradeFilePath(bootfile);
-        if(bleManager.isConnect){
+        if (bleManager.isConnect) {
 
             mShoseUpGradeMangaer.startUpgrade();
-        }else {
+        } else {
             mShoseUpGradeMangaer.startDevice(device);
         }
+    }
+
+    @Override
+    public void writeDataToDevice(byte[] data) {
+        super.writeDataToDevice(data);
+        mTimeoutCheck.setTimeout(1000);
+    }
+
+    @Override
+    public void startDevice(BluetoothDevice device) {
+        super.startDevice(device);
+        resetTags();
+        mTimeoutCheck.setTimeout(10000);
     }
 
     @Override
@@ -166,6 +169,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
     /**
      * 拿到跑步数据的， 进行预处理 放入总缓存
+     *
      * @param data
      */
     private void dealDataContent(byte[] data) {
@@ -175,7 +179,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         int resFrame = (frameH << 8) + frameL;
 
         byte[] resData = null;
-        if(len > 0){
+        if (len > 0) {
             resData = Arrays.copyOfRange(data, 3, 3 + len);
         }
 
@@ -185,65 +189,90 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         mICodoonShoesCallBack.onSyncDataProgress(hasRead * 100 / totalRunFrame);
 
 
-        CLog.i("ble", " has receive run frame " + resFrame);
-        if(currRunFrame == 0){ // all has receive
+        CLog.i(TAG, " has receive run frame " + resFrame);
+        if (runDatas.size() == totalRunFrame) { // all has receive
+            CLog.i(TAG, "==== all run data has receive ");
+
             dealRunData(runDatas, 0, lastParseFrame);
+            resetTags();
 
-        }else if(resFrame == currRunFrame + FRAME_BLOCK -1){
+        } else if (resFrame == currRunFrame + FRAME_BLOCK - 1
+                || resFrame == totalRunFrame - 1) {
+            CLog.i(TAG, "====receive run data blocks");
+            if (checkTotalBlockReceive(runDatas, currRunFrame, resFrame)) {
 
-            /**开始处理当前读取到的16贞**/
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                /**开始处理当前读取到的16贞**/
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-            for(int i = currRunFrame; i<= resFrame; i++ ){
-                byte[] datas = (byte[]) runDatas.get(i);
-                byteArrayOutputStream.write(datas, 0 , datas.length);
+                for (int i = currRunFrame; i <= resFrame; i++) {
+                    byte[] datas = (byte[]) runDatas.get(i);
+                    byteArrayOutputStream.write(datas, 0, datas.length);
+                }
+
+                int start_offset_frame = mParseHelper.findStartTags(byteArrayOutputStream.toByteArray());
+                if (-1 != start_offset_frame) {
+                    CLog.i(TAG, "====we have find start frame");
+                    dealRunData(runDatas, currRunFrame + start_offset_frame, lastParseFrame);
+                    lastParseFrame = currRunFrame + start_offset_frame;
+                }
+
+                byteArrayOutputStream.reset();
+
+                // 这一次的16贞已经读取完毕。读取上16贞
+                currRunFrame -= FRAME_BLOCK;
+                currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
+                getRunFromFrame(currRunFrame);
+
+            } else {
+                mTimeoutCheck.startCheckTimeout();
             }
 
-            int start_offset_frame = mParseHelper.findStartTags(byteArrayOutputStream.toByteArray());
-            if(-1 != start_offset_frame){
-                CLog.i(TAG, "we have find start frame");
-                dealRunData(runDatas, currRunFrame + start_offset_frame,  lastParseFrame );
-                lastParseFrame = currRunFrame + start_offset_frame;
-            }
 
-            byteArrayOutputStream.reset();
-
-            // 这一次的16贞已经读取完毕。读取上16贞
-            currRunFrame -= FRAME_BLOCK;
-            currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
-            getRunFromFrame(currRunFrame);
-        }else {
+        } else {
             CLog.i(TAG, " waiting receive next run frame");
         }
 
 
     }
 
+    /**
+     * 检验是否全部接收了
+     **/
+    private boolean checkTotalBlockReceive(SparseArray mapdata, int start, int end) {
+        for (int frameIndex = start; frameIndex < end; frameIndex++) {
+            if (0 > mapdata.indexOfKey(frameIndex)) return false;
+        }
+        return true;
+    }
+
     private void dealRunData(SparseArray runDatas, int start, int end) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        for (int frameIndex = start; frameIndex < end; frameIndex++){
+        for (int frameIndex = start; frameIndex < end; frameIndex++) {
             byte[] datas = (byte[]) runDatas.get(frameIndex);
-            byteArrayOutputStream.write(datas, 0 , datas.length);
+            byteArrayOutputStream.write(datas, 0, datas.length);
         }
-        byteArrayOutputStream.reset();
+
         List<CodoonShoesModel> ls = mParseHelper.parseData(byteArrayOutputStream.toByteArray());
-        if(null != mICodoonShoesCallBack) mICodoonShoesCallBack.onGetRunSports(ls);
+        if (null != mICodoonShoesCallBack) mICodoonShoesCallBack.onGetRunSports(ls);
+
+        byteArrayOutputStream.reset();
     }
 
 
     /**
      * 处理记步数据
+     *
      * @param stepDatas
      */
     private void dealStepDatas(SparseArray stepDatas) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        for (int frameIndex = 0; frameIndex < totalStepFrame; frameIndex++){
+        for (int frameIndex = 0; frameIndex < totalStepFrame; frameIndex++) {
             byte[] datas = (byte[]) stepDatas.get(frameIndex);
-            for (byte data : datas){
+            for (byte data : datas) {
                 mBaos.write(CodoonEncrypt.encryptMyxor(data, mBaos.size() % 6));
             }
 
-            byteArrayOutputStream.write(datas, 0 , datas.length);
+            byteArrayOutputStream.write(datas, 0, datas.length);
 
         }
 
@@ -252,12 +281,12 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
         mICodoonShoesCallBack.onSyncDataOver(res, mBaos);
         byteArrayOutputStream.reset();
-        totalStepFrame = -1;
-        curStepFrame = -1;
+
     }
 
     /**
      * 读取记步数据
+     *
      * @param curStepFrame
      */
     private void getStepFromFrame(int curStepFrame) {
@@ -265,8 +294,8 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         CLog.i("ble", "get step frame start by:" + curStepFrame);
 
 
-        byte[] bytes = new byte[]{(byte)((curStepFrame >> 8) & 0xff),
-                (byte)(curStepFrame & 0xff)
+        byte[] bytes = new byte[]{(byte) ((curStepFrame >> 8) & 0xff),
+                (byte) (curStepFrame & 0xff)
         };
 
         writeDataToDevice(commandHelper.getCommand(
@@ -278,14 +307,15 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
     /**
      * 读取记步数据
+     *
      * @param curStepFrame
      */
     private void getRunFromFrame(int curStepFrame) {
 
         CLog.i("ble", "get run frame start by:" + curStepFrame);
 
-        byte[] bytes = new byte[]{(byte)((curStepFrame >> 8) & 0xff),
-                (byte)(curStepFrame & 0xff)
+        byte[] bytes = new byte[]{(byte) ((curStepFrame >> 8) & 0xff),
+                (byte) (curStepFrame & 0xff)
         };
 
         writeDataToDevice(commandHelper.getCommand(
@@ -295,19 +325,19 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     }
 
     private void dealResCommand(byte[] data) {
-        if(CLog.isDebug)
-        if(null != mICodoonShoesCallBack) mICodoonShoesCallBack.onResponse(data);
+        if (CLog.isDebug)
+            if (null != mICodoonShoesCallBack) mICodoonShoesCallBack.onResponse(data);
 
         mTimeoutCheck.stopCheckTimeout();
 
         int resKey = data[1];
         int len = data[2] & 0xff;
         byte[] resData = null;
-        if(len > 0){
+        if (len > 0) {
             resData = Arrays.copyOfRange(data, 3, 3 + len);
         }
 
-        switch (resKey){
+        switch (resKey) {
             case BaseCommand.RES_BIND:
                 mICodoonShoesCallBack.onBindSucess();
                 break;
@@ -315,7 +345,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
             case BaseCommand.RES_READ_VERSION:
                 String hVersion = (resData[1] & 0xff) + "." + (resData[2] & 0xff);
 
-                 if(len == 5){
+                if (len == 5) {
                     hVersion = hVersion + "_" + resData[3] + "." + resData[4];
                 }
                 mICodoonShoesCallBack.onGetVersion(hVersion);
@@ -350,18 +380,20 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 totalStepFrame = (frameH << 8) + frameL;
                 CLog.i("ble", "total step frame:" + totalStepFrame);
 
-                if(totalStepFrame > 0){
-                    curStepFrame = totalStepFrame - FRAME_BLOCK;
+                if (totalStepFrame > 0) {
+                    curStepFrame = totalStepFrame - totalStepFrame % FRAME_BLOCK;
                     curStepFrame = (curStepFrame < 0) ? 0 : curStepFrame;
                     getStepFromFrame(curStepFrame);
-                }else {
+                } else {
                     mICodoonShoesCallBack.onSyncDataProgress(100);
 
                     mICodoonShoesCallBack.onSyncDataOver(null, null);
+
+                    resetTags();
                 }
 
             }
-                break;
+            break;
             case BaseCommand.RES_READ_STEP_FRAME: {
                 int frameH = resData[0] & 0xff;
                 int frameL = resData[1] & 0xff;
@@ -372,19 +404,30 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 int hasRead = stepDatas.size();
                 mICodoonShoesCallBack.onSyncDataProgress(hasRead * 100 / totalStepFrame);
 
-                CLog.i("ble", " has receive frame " + frame);
-                if(curStepFrame == 0){ // all has receive
+                CLog.i(TAG, " has receive frame " + frame);
+                if (stepDatas.size() == totalStepFrame) { // all has receive
+                    CLog.i(TAG, "=====all step data received");
                     dealStepDatas(stepDatas);
-                }else if(frame == curStepFrame + FRAME_BLOCK -1){
-                    // 这一次的16贞已经读取完毕。读取上16贞
-                    curStepFrame -= FRAME_BLOCK;
-                    curStepFrame = (curStepFrame < 0) ? 0 : curStepFrame;
-                    getStepFromFrame(curStepFrame);
-                }else {
+
+                    resetTags();
+                } else if ((frame == totalStepFrame - 1 || frame == curStepFrame + FRAME_BLOCK - 1)) {
+
+                    if (checkTotalBlockReceive(stepDatas, curStepFrame, frame)) {
+                        CLog.i(TAG, " =====cur block receive success ");
+                        // 这一次的16贞已经读取完毕。读取上16贞
+                        curStepFrame -= FRAME_BLOCK;
+                        curStepFrame = (curStepFrame < 0) ? 0 : curStepFrame;
+                        getStepFromFrame(curStepFrame);
+                    } else {
+                        CLog.i(TAG, " =====cur block receive failed, resend again ");
+                        mTimeoutCheck.startCheckTimeout();
+                    }
+
+                } else {
                     CLog.i(TAG, " waiting receive next step frame");
                 }
-             }
-                break;
+            }
+            break;
 
             case BaseCommand.RES_CLEAR_SPORT_DATA:
                 mICodoonShoesCallBack.onClearDataSuccessed();
@@ -409,14 +452,16 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 totalRunFrame = (frameH << 8) + frameL;
                 lastParseFrame = totalRunFrame;
                 CLog.i("ble", "total step frame:" + totalStepFrame + " each framLen " + runDataEachLen);
-                if(totalRunFrame > 0){
+                if (totalRunFrame > 0) {
                     currRunFrame = totalRunFrame - FRAME_BLOCK;
                     currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
                     getStepFromFrame(currRunFrame);
-                }else {
+                } else {
                     mICodoonShoesCallBack.onSyncDataProgress(100);
 
-                    mICodoonShoesCallBack.onSyncDataOver(null, null);
+                    mICodoonShoesCallBack.onGetRunSports(null);
+
+                    resetTags();
                 }
                 break;
             case CodoonShoesCommand.RES_SHOES_STAE:
@@ -443,11 +488,15 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
 
     @Override
-    public void stop(){
-         super.stop();
+    public void stop() {
+        super.stop();
         stopUpgrade();
         runDatas.clear();
         stepDatas.clear();
+        resetTags();
+    }
+
+    private void resetTags() {
         currRunFrame = -1;
         curStepFrame = -1;
         lastParseFrame = -1;
@@ -457,20 +506,8 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
     @Override
     public void onReSend() {
-        if(curStepFrame != totalStepFrame){
-            CLog.i(TAG, " re read step");
-            for(int i = curStepFrame; i < curStepFrame + FRAME_BLOCK && i < totalStepFrame; i++){
-                stepDatas.remove(i);
-            }
-        }else if(currRunFrame != totalRunFrame){
-            CLog.i(TAG, " re read run");
-            for(int i = currRunFrame; i < currRunFrame + FRAME_BLOCK && i < totalRunFrame; i++){
-                stepDatas.remove(i);
-            }
-        }
 
         super.onReSend();
-
 
     }
 }

@@ -88,4 +88,23 @@ public class CodoonShoesCommandHelper extends BaseCommandHelper{
 
     }
 
+
+    /**
+     *
+     * @param height   cm
+     * @param weight   kg
+     * @param age
+     * @return
+     */
+    public byte[] getSetUserInfoCommand(int height, int weight, int age){
+        byte[] datas = new byte[14];
+        datas[0] = (byte) (height & 0xff);
+        datas[1] = (byte) (weight & 0xff);
+        datas[2] = (byte) (age & 0xff);
+        for (int i = 3; i < datas.length; i++){
+            datas[i] = 0;
+        }
+        return getCommand(CodoonShoesCommand.CODE_UPDATE_USER_INFO, datas);
+    }
+
 }
