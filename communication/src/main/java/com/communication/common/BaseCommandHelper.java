@@ -49,12 +49,12 @@ public class BaseCommandHelper {
 
         byte[] data = new byte[7];
         for (int i = 0; i < 6; i++) {
-            data[i + 3] = (byte) (Integer.valueOf(times[i], 16) & 0xff);
+            data[i] = (byte) (Integer.valueOf(times[i], 16) & 0xff);
         }
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        data[9] = (byte)((cal.get(Calendar.DAY_OF_WEEK) - 2 + 7) % 7);
+        data[6] = (byte)((cal.get(Calendar.DAY_OF_WEEK) - 2 + 7) % 7);
         return data;
     }
 

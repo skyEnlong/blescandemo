@@ -3,12 +3,15 @@ package com.example.enlong.blescandemo;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 
-import com.communication.bean.*;
+import com.communication.bean.CodoonHealthDevice;
+import com.communication.bean.CodoonShoesMinuteModel;
+import com.communication.bean.CodoonShoesModel;
+import com.communication.bean.CodoonShoesState;
 import com.communication.ble.CodoonShoesSyncManager;
 import com.communication.ble.ICodoonShoesCallBack;
 import com.communication.data.AccessoryValues;
+import com.communication.data.DataUtil;
 import com.communication.gpsband.GpsBandParseUtil;
-import com.communication.util.CommonUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -31,7 +34,7 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
     @Override
     public void onResponse(byte[] data) {
-        String str = CommonUtils.convertByteToHexString(data);
+        String str = DataUtil.DebugPrint(data);
         MsgEvent event = new MsgEvent();
         event.msg = str;
         EventBus.getDefault().post(event);
@@ -214,7 +217,8 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
     public void writeCommand(byte[] data){
         MsgEvent event = new MsgEvent();
-        event.msg = CommonUtils.convertByteToHexString(data);
+        event.msg = DataUtil.DebugPrint(data);
+        event.event_id = 1;
         EventBus.getDefault().post(event);
 
         syncManager.writeDataToDevice(data);

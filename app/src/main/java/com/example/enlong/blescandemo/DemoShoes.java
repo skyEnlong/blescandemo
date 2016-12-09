@@ -3,13 +3,11 @@ package com.example.enlong.blescandemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.communication.bean.CodoonHealthDevice;
 import com.communication.shoes.CodoonShoesCommandHelper;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
@@ -18,43 +16,10 @@ import de.greenrobot.event.EventBus;
  * Created by enlong on 2016/12/7.
  */
 
-public class DemoShoes extends Activity {
+public class DemoShoes extends Activity implements View.OnClickListener{
 
 
-    @BindView(R.id.button7)
-    Button button7;
-    @BindView(R.id.button9)
-    Button button9;
-    @BindView(R.id.button10)
-    Button button10;
-    @BindView(R.id.button11)
-    Button button11;
-    @BindView(R.id.button12)
-    Button button12;
-    @BindView(R.id.button)
-    Button button;
-    @BindView(R.id.button15)
-    Button button15;
-    @BindView(R.id.button6)
-    Button button6;
-    @BindView(R.id.button16)
-    Button button16;
-    @BindView(R.id.button13)
-    Button button13;
-    @BindView(R.id.button4)
-    Button button4;
-    @BindView(R.id.button8)
-    Button button8;
-    @BindView(R.id.button3)
-    Button button3;
-    @BindView(R.id.button5)
-    Button button5;
-    @BindView(R.id.button2)
-    Button button2;
-    @BindView(R.id.button14)
-    Button button14;
-    @BindView(R.id.button17)
-    Button button17;
+
     private DemoSyncManger manger;
     private BleScanMananfer scanMananfer;
     private TextView receiveText;
@@ -73,6 +38,27 @@ public class DemoShoes extends Activity {
         sendText = (TextView) findViewById(R.id.textView2);
         receiveText = (TextView) findViewById(R.id.textView4);
         commandHelper = new CodoonShoesCommandHelper();
+        int[] butnId = new int[]{R.id.button7,
+                R.id.button9,
+                R.id.button10,
+                R.id.button11,
+                R.id.button12,
+                R.id.button,
+                R.id.button15,
+                R.id.button6,
+                R.id.button16,
+                R.id.button13,
+                R.id.button4,
+                R.id.button8,
+                R.id.button3,
+                R.id.button5,
+                R.id.button2,
+                R.id.button14,
+                R.id.button17};
+
+        for(int id : butnId){
+            findViewById(id).setOnClickListener(this);
+        }
     }
 
     @OnClick(R.id.button3)
@@ -188,27 +174,16 @@ public class DemoShoes extends Activity {
     }
 
     public void onEventMainThread(MsgEvent event) {
-        receiveText.setText(event.msg);
+        if(event.event_id == 0){
+            receiveText.setText(event.msg);
+        }else {
+            sendText.setText(event.msg);
+
+        }
+
     }
 
 
-    @OnClick({R.id.button7,
-            R.id.button9,
-            R.id.button10,
-            R.id.button11,
-            R.id.button12,
-            R.id.button,
-            R.id.button15,
-            R.id.button6,
-            R.id.button16,
-            R.id.button13,
-            R.id.button4,
-            R.id.button8,
-            R.id.button3,
-            R.id.button5,
-            R.id.button2,
-            R.id.button14,
-            R.id.button17})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button7:
@@ -248,7 +223,7 @@ public class DemoShoes extends Activity {
                 getSyncReady();
                 break;
             case R.id.button3:
-                getSyncReady();
+                startScanAndConnect();
                 break;
             case R.id.button5:
                 getId();
