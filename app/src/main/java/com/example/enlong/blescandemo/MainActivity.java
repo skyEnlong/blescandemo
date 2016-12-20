@@ -17,11 +17,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import glide.GlideImage;
 
 public class MainActivity extends AppCompatActivity implements ISearResult, View.OnClickListener {
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
             SYNC_INTERVAL_IN_MINUTES *
                     SECONDS_PER_MINUTE;
 
+    public ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
         light = (Button) findViewById(R.id.light);
         light.setOnClickListener(this);
         value_txt = (TextView) findViewById(R.id.value_txt);
-
+        imageView = (ImageView) findViewById(R.id.image_view);
         Intent intent = new Intent("com.example.enlong.blescandemo.SearchService");
         ComponentName componentName = new ComponentName(getPackageName(), "com.example.enlong.blescandemo.SearchService");
         intent.setComponent(componentName);
@@ -74,16 +77,8 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
         EventBus.getDefault().register(this);
 
         BluetoothAdapter.getDefaultAdapter().enable();
-        startJob();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                int i = 5 /0 ;
-//            }
-//        }, 15000);
-         SystemUtils.CreateSyncAccount(this);
 
-        SystemUtils.isMobile("huawei");
+
     }
 
     ServiceConnection connection = new ServiceConnection() {
@@ -169,30 +164,31 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.scan_button){
-
-            if(null != myBinder){
-
-                switch (cur_state){
-                    case  STATE_NONE:
-                        myBinder.startScan();
-                        scanBtn.setText("停止扫描");
-                        cur_state = STATE_SCAN;
-
-                        break;
-                    case STATE_SCAN:
-                        myBinder.stopScan();
-                        scanBtn.setText("开始扫描");
-                        cur_state =  STATE_NONE;
-                        break;
-
-                    case STATE_CONNECT:
-                        myBinder.disConnect();
-                        scanBtn.setText("开始扫描");
-                        cur_state = STATE_NONE;
-                        break;
-                }
-
-            }
+            new GlideImage<>(this).displayAnimationImage(R.raw.webp_gif, imageView, 0, 0);
+//
+//            if(null != myBinder){
+//
+//                switch (cur_state){
+//                    case  STATE_NONE:
+//                        myBinder.startScan();
+//                        scanBtn.setText("停止扫描");
+//                        cur_state = STATE_SCAN;
+//
+//                        break;
+//                    case STATE_SCAN:
+//                        myBinder.stopScan();
+//                        scanBtn.setText("开始扫描");
+//                        cur_state =  STATE_NONE;
+//                        break;
+//
+//                    case STATE_CONNECT:
+//                        myBinder.disConnect();
+//                        scanBtn.setText("开始扫描");
+//                        cur_state = STATE_NONE;
+//                        break;
+//                }
+//
+//            }
         }else if(view.getId() == R.id.light){
             if(light.getText().toString().equals(getString(R.string.state_light))){
                 light.setText(R.string.state_keep_light);
@@ -254,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
         JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         ComponentName componentName = new ComponentName(getPackageName(),"com.example.enlong.blescandemo.MyJobService");
         JobInfo.Builder builder = new JobInfo.Builder(++mJobId, componentName);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
         builder.setRequiresDeviceIdle(false);
         builder.setPeriodic(1000);
         scheduler.schedule(builder.build());

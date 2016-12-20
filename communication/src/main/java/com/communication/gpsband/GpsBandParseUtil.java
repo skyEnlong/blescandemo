@@ -474,25 +474,25 @@ public class GpsBandParseUtil {
         append.append(lists.get(0) & 0xff);
         append.append("-");
 
-        append.append(CommonUtils.getHexString(((lists.get(1) & 0xff) << 8) + (lists.get(2) & 0xff)));
+        append.append((((lists.get(1) & 0xff) << 8) + (lists.get(2) & 0xff)));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(((lists.get(3) & 0xff) << 8) + (lists.get(4) & 0xff)));
+        append.append((((lists.get(3) & 0xff) << 8) + (lists.get(4) & 0xff)));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(((lists.get(5) & 0xff) << 8) + (lists.get(6) & 0xff)));
+        append.append((((lists.get(5) & 0xff) << 8) + (lists.get(6) & 0xff)));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(lists.get(7) & 0xff));
+        append.append((lists.get(7) & 0xff));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(((lists.get(8) & 0xff) << 8) + (lists.get(9) & 0xff)));
+        append.append((((lists.get(8) & 0xff) << 8) + (lists.get(9) & 0xff)));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(((lists.get(10) & 0xff) << 8) + (lists.get(11) & 0xff)));
+        append.append((((lists.get(10) & 0xff) << 8) + (lists.get(11) & 0xff)));
         append.append("-");
 
-        append.append(CommonUtils.getHexString(lists.get(12) & 0xff));
+        append.append((lists.get(12) & 0xff));
 
         return append.toString();
     }

@@ -39,10 +39,14 @@ public class DataUtil {
 		if(null == outData) return null;
 		String str = "";
 		for (int i = 0; i < outData.length; i++) {
+
 			str += CommonUtils.getHexString(outData[i]) + "   ";
+			if(i % 8 == 7 ){
+				str += "\n";
+			}
 		}
 
-		CLog.i(TAG, str + "   lenth:" + outData.length);
+		CLog.i(TAG, str );
 		return str;
 	}
 

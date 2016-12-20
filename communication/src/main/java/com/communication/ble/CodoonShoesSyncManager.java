@@ -12,6 +12,7 @@ import com.communication.common.BaseCommandHelper;
 import com.communication.data.AccessoryDataParseUtil;
 import com.communication.data.AccessoryValues;
 import com.communication.data.CLog;
+import com.communication.data.DataUtil;
 import com.communication.data.DeviceUpgradeCallback;
 import com.communication.gpsband.GpsBandParseUtil;
 import com.communication.shoes.CodoonShoesCommand;
@@ -92,6 +93,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         commandHelper = new BaseCommandHelper();
         runDatas = new SparseArray();
         stepDatas = new SparseArray();
+        mParseHelper = new CodoonShoesParseHelper();
     }
 
     @Override
@@ -194,11 +196,12 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
             CLog.i(TAG, "==== all run data has receive ");
 
             dealRunData(runDatas, 0, lastParseFrame);
+
             resetTags();
 
         } else if (resFrame == currRunFrame + FRAME_BLOCK - 1
                 || resFrame == totalRunFrame - 1) {
-            CLog.i(TAG, "====receive run data blocks");
+            CLog.i(TAG, "====receive run data blocks:" + currRunFrame + " to-->" + resFrame);
             if (checkTotalBlockReceive(runDatas, currRunFrame, resFrame)) {
 
                 /**开始处理当前读取到的16贞**/
@@ -246,10 +249,12 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     }
 
     private void dealRunData(SparseArray runDatas, int start, int end) {
+        CLog.i(TAG, "deal from " + start + " to " + end);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         for (int frameIndex = start; frameIndex < end; frameIndex++) {
             byte[] datas = (byte[]) runDatas.get(frameIndex);
             byteArrayOutputStream.write(datas, 0, datas.length);
+            DataUtil.DebugPrint(datas);
         }
 
         List<CodoonShoesModel> ls = mParseHelper.parseData(byteArrayOutputStream.toByteArray());
@@ -330,7 +335,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
         mTimeoutCheck.stopCheckTimeout();
 
-        int resKey = data[1];
+        int resKey = data[1] & 0xff;
         int len = data[2] & 0xff;
         byte[] resData = null;
         if (len > 0) {
@@ -453,9 +458,9 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 lastParseFrame = totalRunFrame;
                 CLog.i("ble", "total step frame:" + totalStepFrame + " each framLen " + runDataEachLen);
                 if (totalRunFrame > 0) {
-                    currRunFrame = totalRunFrame - FRAME_BLOCK;
+                    currRunFrame = totalRunFrame - totalRunFrame % FRAME_BLOCK;
                     currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
-                    getStepFromFrame(currRunFrame);
+                    getRunFromFrame(currRunFrame);
                 } else {
                     mICodoonShoesCallBack.onSyncDataProgress(100);
 

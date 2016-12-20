@@ -9,6 +9,7 @@ import com.communication.data.CLog;
 import com.communication.util.CommonUtils;
 
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -49,13 +50,13 @@ public class CodoonShoesParseHelper {
                 CLog.e(TAG, " not find start_tag");
                 return models;
             }
+            parse_index = start_index;
 
             CLog.i(TAG, "===========find start_tag========");
 
-            byte[] arr = Arrays.copyOfRange(bytes, parse_index, parse_index + FREAME_LENGTH);
+            byte[] arr = Arrays.copyOfRange(bytes, start_index, start_index + FREAME_LENGTH);
 
             parse_index += FREAME_LENGTH;
-
 
             long start = getSysTime(arr);
 
@@ -64,12 +65,12 @@ public class CodoonShoesParseHelper {
             model.minutesModels = new ArrayList();
 
 
-            //找到了汇总信息的标志位，
-            int absTotalIndex = findFlag(FLAG_TOTAL, bytes, parse_index, bytes.length);
+            //找到了汇总信息的标志位，顺序查找，如果是其他TAG， 放弃解析本次运动
+            int absTotalIndex = findFlagSeq(FLAG_TOTAL, bytes, parse_index, bytes.length, true);
 
             if (-1 == absTotalIndex) {
                 CLog.e(TAG, " not end start_tag");
-                return models;
+                continue;
             }
 
             CLog.i(TAG, "===========find flag_abstract========");
@@ -77,30 +78,31 @@ public class CodoonShoesParseHelper {
             //每分钟数据占位两贞
             for (int j = parse_index; j < absTotalIndex - FREAME_LENGTH; j += FREAME_LENGTH * 2) {
                 arr = Arrays.copyOfRange(bytes, j, j + FREAME_LENGTH * 2);
-
                 model.minutesModels.add(parseMinuteModel(arr));
 
             }
             parse_index = absTotalIndex;
 
 
-            //找到了结束的标志位，
-            int end_flag_index = findFlag(FLAG_END, bytes, parse_index, bytes.length);
+            //找到了结束的标志位，顺序查找，如果是其他TAG， 放弃解析本次运动
+            int end_flag_index = findFlagSeq(FLAG_END, bytes, parse_index, bytes.length, true);
             if (-1 == absTotalIndex) {
                 CLog.e(TAG, " not end start_tag");
-                return models;
+                continue;
             }
 
             CLog.i(TAG, "===========find end_tag========");
 
             arr = Arrays.copyOfRange(bytes, parse_index, end_flag_index - FREAME_LENGTH);
 
+
             parseTotalMode(model, arr);
 
             parse_index = end_flag_index;
             arr = Arrays.copyOfRange(bytes, parse_index, parse_index + FREAME_LENGTH);
+
             long endTIme = getSysTime(arr);
-            CLog.i(TAG, "find start_time:" + endTIme);
+            CLog.i(TAG, "find end_time:" + endTIme);
             model.endDateTIme = endTIme;
 
             models.add(model);
@@ -125,10 +127,16 @@ public class CodoonShoesParseHelper {
      */
     private int findFlag(int flag, byte[] allContent, int start_index, int end_index) {
 
+        return findFlagSeq(flag, allContent, start_index, end_index, false);
+    }
+
+    private int findFlagSeq(int flag, byte[] allContent, int start_index, int end_index, boolean isNeedSeq){
         int parse_index = start_index;
         int total = end_index / FREAME_LENGTH;
 
         byte[] arr = new byte[FREAME_LENGTH];
+
+        int flag_parse = -1;
         for (int i = start_index / FREAME_LENGTH; i < total; i += 1) {
 
             for (int k = 0; k < FREAME_LENGTH; k++) {
@@ -144,7 +152,7 @@ public class CodoonShoesParseHelper {
                 int count_flag_end = 0;
                 for (int v : arr) {
 
-                    switch (v) {
+                    switch (v & 0xff) {
                         case FLAG_START:
                             count_flag_start++;
                             break;
@@ -160,20 +168,22 @@ public class CodoonShoesParseHelper {
                 }
 
 
-                if (count_flag_end == FREAME_LENGTH && flag == FLAG_END) {
+                if (count_flag_end == FREAME_LENGTH) {
+                    flag_parse = FLAG_END;
+                }else
 
-                    return parse_index;
+                if (count_flag_total == FREAME_LENGTH ) {
+                    flag_parse = FLAG_TOTAL;
+
+                }else  if (count_flag_start == FREAME_LENGTH ) {
+                    flag_parse = FLAG_START;
                 }
 
-                if (count_flag_total == FREAME_LENGTH && flag == FLAG_TOTAL) {
-
-                    return parse_index;
-                }
-
-
-                if (count_flag_start == FREAME_LENGTH && flag == FLAG_START) {
-
-                    return parse_index;
+                if(flag_parse == flag){
+                    return  parse_index;
+                }else if(isNeedSeq){
+                    CLog.e(TAG, "tag not match,quit this sport... ");
+                    return -1;
                 }
             }
         }
@@ -196,6 +206,8 @@ public class CodoonShoesParseHelper {
         model.inFootCount = byteBuffer.getShort() & 0xff;
         model.outFootCount = byteBuffer.getShort() & 0xff;
         model.cachPower = byteBuffer.getShort() & 0xff;
+
+        CLog.i(TAG, model.toString());
         return model;
     }
 
@@ -214,6 +226,9 @@ public class CodoonShoesParseHelper {
         model.frontOnStep = byteBuffer.getChar() & 0xff;
         model.backOnStep = byteBuffer.getChar() & 0xff;
         model.cachPower = byteBuffer.getShort() & 0xff;
+
+        CLog.i(TAG, model.toString());
+
         return model;
     }
 
@@ -235,6 +250,7 @@ public class CodoonShoesParseHelper {
         for(int i =0; i < km; i++){
             model.paces.add(Long.valueOf(byteBuffer.getShort() & 0xff));
         }
+        CLog.i(TAG, model.toString());
     }
 
 
@@ -293,6 +309,9 @@ public class CodoonShoesParseHelper {
 
         mCalendar.setTimeZone(TimeZone.getDefault());
         mCalendar.set(year, month, day, hour, iMin, second);
+
+        String format = "yyyy-MM-dd HH:mm:ss";
+        CLog.i(TAG, new SimpleDateFormat(format).format(mCalendar.getTime()));
         return mCalendar.getTimeInMillis();
     }
 
@@ -303,6 +322,7 @@ public class CodoonShoesParseHelper {
      * @return
      */
     public int findStartTags(byte[] datas){
+        if(null == datas) return  -1;
         int result = findFlag(FLAG_START, datas, 0 , datas.length);
 
         return result == -1 ? -1 : (result - FREAME_LENGTH) / FREAME_LENGTH;

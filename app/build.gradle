@@ -18,6 +18,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
 }
 
 dependencies {
@@ -27,4 +34,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.0'
     compile project(':communication')
     compile 'com.jakewharton:butterknife:8.4.0'
+    compile project(':webpdecoder')
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+
 }

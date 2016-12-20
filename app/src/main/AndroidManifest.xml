@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
+    tools:overrideLibrary="com.example.webpdecoder"
     package="com.example.enlong.blescandemo">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -43,7 +43,11 @@
             android:name=".MainActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
         <service android:name=".SearchService" android:exported="true">
@@ -56,12 +60,10 @@
 
         <service
             android:name=".MyJobService"
-            android:process=":live"
             android:permission="android.permission.BIND_JOB_SERVICE"></service>
 
         <service
             android:name=".AccountSyncService"
-            android:process=":live"
             android:exported="true">
 
             <intent-filter>

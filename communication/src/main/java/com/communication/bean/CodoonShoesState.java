@@ -21,4 +21,15 @@ public class CodoonShoesState implements Serializable{
 
     /**时间正常0x00  时间丢失0x01**/
     public int timeState;
+
+    @Override
+    public String toString() {
+        return "{" +
+                "sportState=" + sportState +
+                ", elvationState=" + elvationState +
+                ", normalStoreState=" + normalStoreState +
+                ", runStoreState=" + runStoreState +
+                ", timeState=" + timeState +
+                '}';
+    }
 }

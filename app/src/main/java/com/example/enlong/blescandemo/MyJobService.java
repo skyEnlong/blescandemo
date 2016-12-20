@@ -53,7 +53,7 @@ public class MyJobService extends JobService {
     }
     @Override
     public boolean onStartJob(JobParameters params) {
-        Log.i(TAG, "onStartJob:" + params.getJobId());
+        Log.i(TAG, "onStartJob:" + params.getJobId() + " Thread:" + Thread.currentThread().getName());
         this.params = params;
         mHandler.removeCallbacks(r);
 

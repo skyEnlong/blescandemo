@@ -216,11 +216,39 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
     }
 
     public void writeCommand(byte[] data){
-        MsgEvent event = new MsgEvent();
-        event.msg = DataUtil.DebugPrint(data);
-        event.event_id = 1;
-        EventBus.getDefault().post(event);
 
-        syncManager.writeDataToDevice(data);
+        if(syncManager.isConnect()){
+            MsgEvent event = new MsgEvent();
+            event.msg = DataUtil.DebugPrint(data);
+            event.event_id = 1;
+            EventBus.getDefault().post(event);
+
+            syncManager.writeDataToDevice(data);
+        }else {
+            MsgEvent event = new MsgEvent();
+            event.msg = "连接以段开， 重新连接中";
+            event.event_id = 1;
+            EventBus.getDefault().post(event);
+
+            start(this.device);
+        }
+
+    }
+
+    public void startUpgrade() {
+        if(syncManager.isConnect()){
+            MsgEvent event = new MsgEvent();
+            event.msg = "开始升级";
+            event.event_id = 1;
+            EventBus.getDefault().post(event);
+
+        }else {
+            MsgEvent event = new MsgEvent();
+            event.msg = "连接以段开， 重新连接中";
+            event.event_id = 1;
+            EventBus.getDefault().post(event);
+
+            start(this.device);
+        }
     }
 }

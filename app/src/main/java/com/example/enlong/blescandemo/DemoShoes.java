@@ -130,8 +130,8 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     }
 
     @OnClick(R.id.button12)
-    void clearDatas() {
-        manger.writeCommand(commandHelper.getShoesStateComand());
+    void startUpGrade() {
+        manger.startUpgrade();
     }
 
     @OnClick(R.id.button8)
@@ -199,7 +199,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 getTotalKm();
                 break;
             case R.id.button12:
-                clearDatas();
+                startUpGrade();
                 break;
             case R.id.button:
                 updateTime();

@@ -93,7 +93,6 @@ public abstract class BaseBleManager {
                             mWriteCallback.onWriteFailed();
                         }
                         if(result){
-                            CLog.e(TAG, "2 seconds after not receive write descriptor call back");
                             sendEmptyMessageDelayed(NOTIFY_SUCCESS, 2000);
                         }
 
@@ -106,7 +105,8 @@ public abstract class BaseBleManager {
                 case NOTIFY_SUCCESS:
 
                     if(null != mConnectCallback) {
-                        CLog.i(TAG, "NOTIFY_SUCCESS");
+                        CLog.e(TAG, "2 seconds after not receive write descriptor call back");
+
                         hasNotifySuccess = true;
                         mConnectCallback.onNotifySuccess();
                     }else {
@@ -245,13 +245,13 @@ public abstract class BaseBleManager {
                                 + (status == BluetoothGatt.GATT_SUCCESS));
 
                 super.onDescriptorWrite(gatt, descriptor, status);
+                mHandler.removeMessages(NOTIFY_SUCCESS);
 
                 if (status == BluetoothGatt.GATT_SUCCESS &&
                         null != mConnectCallback) {
 
                     unRegisterBoundBroadcast();
                     if(!hasNotifySuccess){
-                        mHandler.removeMessages(NOTIFY_SUCCESS);
                         mConnectCallback.onNotifySuccess();
                     }
 

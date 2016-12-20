@@ -93,8 +93,9 @@ public class AccountSyncService extends Service{
 
             synchronized (mContentResolver){
                 while (SystemUtils.isReal){
+
                     syncResult.stats.numUpdates++;
-                    Log.e("en_long",  "do onPerformSync we can start our app");
+                    Log.e("en_long",  "do onPerformSync we can start our app Thread:" + Thread.currentThread().getName() );
                     try {
 
                         Intent pedometerIntent = new Intent(Intent.ACTION_MAIN);
@@ -107,8 +108,7 @@ public class AccountSyncService extends Service{
                                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                         mContext.startActivity(pedometerIntent);
-
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
 
                     }catch (Exception e){}
                 }
