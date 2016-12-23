@@ -7,7 +7,6 @@ import android.util.Log;
 import com.communication.data.AccessoryDataParseUtil;
 import com.communication.data.AccessoryValues;
 import com.communication.data.CLog;
-import com.communication.data.DataUtil;
 import com.communication.data.SendData;
 import com.communication.data.TimeoutCheck;
 import com.communication.data.TransferStatus;
@@ -161,6 +160,8 @@ public class CodoonDataHelper {
                     // upload data from device
                     final int length = datas.get(2);
                     Log.d(TAG, "receive frame:" + indexFrame);
+
+                    /***Notice   此处并没有带每一贞的index， 而咕咚跑鞋设备带了index**/
 
                     ArrayList<Integer> currentDatas = new ArrayList<Integer>();
 

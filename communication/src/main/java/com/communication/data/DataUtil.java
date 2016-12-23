@@ -50,6 +50,42 @@ public class DataUtil {
 		return str;
 	}
 
+	public static String DebugPrintSix(byte[] outData) {
+		if (!isDebug()) {
+			return null;
+		}
+		if(null == outData) return null;
+		String str = "";
+		for (int i = 0; i < outData.length; i++) {
+
+			str += CommonUtils.getHexString(outData[i]) + "   ";
+			if(i % 6 == 5 ){
+				str += "\n";
+			}
+		}
+
+		CLog.i(TAG, str );
+		return str;
+	}
+
+	public static String DebugPrint20(byte[] outData) {
+		if (!isDebug()) {
+			return null;
+		}
+		if(null == outData) return null;
+		String str = "";
+		for (int i = 0; i < outData.length; i++) {
+
+			str += CommonUtils.getHexString(outData[i]) + " ";
+			if(i % 20 == 19 ){
+				str += "\n";
+			}
+		}
+
+		CLog.i(TAG, str );
+		return str;
+	}
+
     public static String DebugPrint(String tag, byte[] outData) {
 
         if(null == outData) return null;

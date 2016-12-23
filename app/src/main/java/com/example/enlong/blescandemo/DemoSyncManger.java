@@ -16,6 +16,8 @@ import com.communication.gpsband.GpsBandParseUtil;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 
@@ -33,8 +35,8 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
     }
 
     @Override
-    public void onResponse(byte[] data) {
-        String str = DataUtil.DebugPrint(data);
+    public void onResponse(String str) {
+
         MsgEvent event = new MsgEvent();
         event.msg = str;
         EventBus.getDefault().post(event);
@@ -84,7 +86,17 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
     @Override
     public void onGetRunSports(List<CodoonShoesModel> ls) {
+        StringBuffer str = new StringBuffer();
+        if(null != ls){
+            for(CodoonShoesModel model : ls){
+                str.append(model.toString());
+                str.append("\n");
+            }
 
+            MsgEvent event = new MsgEvent();
+            event.msg = "解析数据：" + str.toString();
+            EventBus.getDefault().post(event);
+        }
     }
 
     @Override
@@ -180,7 +192,16 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
     @Override
     public void onSyncDataOver(HashMap<String, AccessoryValues> data, ByteArrayOutputStream baos) {
+        if(null != data){
+            Set<Map.Entry<String, AccessoryValues>> kv = data.entrySet();
+            for (Map.Entry<String, AccessoryValues>  v : kv){
+                MsgEvent event = new MsgEvent();
+                event.msg =  v.getValue().toString();
+                EventBus.getDefault().post(event);
 
+            }
+
+        }
     }
 
     @Override
@@ -250,5 +271,9 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
             start(this.device);
         }
+    }
+
+    public void disConnect() {
+        syncManager.close();
     }
 }

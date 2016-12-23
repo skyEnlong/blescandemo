@@ -374,6 +374,8 @@ public class AccessoryDataParseUtil extends LocalDecode {
             CLog.e(TAG, "bytes null");
             return null;
         }
+
+        DataUtil.DebugPrintSix(bytes);
         int  FREAME_LENGTH = 6;
         if (0 != bytes.length % FREAME_LENGTH) {
             CLog.e(TAG, "bytes length not right");
@@ -482,6 +484,7 @@ public class AccessoryDataParseUtil extends LocalDecode {
 
 
                         int[] sportValues = getSportData(arr);
+
                         dealDetailWithDB(sportValues, calStartTime(curTime), key);
 
                         curTime += 600000; // update start_time next 10 min

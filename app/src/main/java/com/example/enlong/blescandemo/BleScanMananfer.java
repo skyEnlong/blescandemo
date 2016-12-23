@@ -63,7 +63,7 @@ public class BleScanMananfer {
 
     public void startScan(){
         if(Build.VERSION.SDK_INT < 18) return;
-
+        mBluetoothAdapter.stopLeScan(mLeScanCallback);
         isSearch = mBluetoothAdapter.startLeScan(mLeScanCallback);
 //        Log.i("cod_smart", "start scan:" + isSearch);
 //        IntentFilter filter = new IntentFilter();

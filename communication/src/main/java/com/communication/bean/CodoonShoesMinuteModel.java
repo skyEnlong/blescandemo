@@ -47,7 +47,7 @@ public class CodoonShoesMinuteModel implements Serializable {
     /**
      * 缓冲击力
      **/
-    public int cachPower;
+    public float cachPower;
 
     @Override
     public String toString() {

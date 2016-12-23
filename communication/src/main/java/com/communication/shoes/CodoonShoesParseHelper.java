@@ -69,7 +69,7 @@ public class CodoonShoesParseHelper {
             int absTotalIndex = findFlagSeq(FLAG_TOTAL, bytes, parse_index, bytes.length, true);
 
             if (-1 == absTotalIndex) {
-                CLog.e(TAG, " not end start_tag");
+                CLog.e(TAG, " not total tag");
                 continue;
             }
 
@@ -86,15 +86,14 @@ public class CodoonShoesParseHelper {
 
             //找到了结束的标志位，顺序查找，如果是其他TAG， 放弃解析本次运动
             int end_flag_index = findFlagSeq(FLAG_END, bytes, parse_index, bytes.length, true);
-            if (-1 == absTotalIndex) {
-                CLog.e(TAG, " not end start_tag");
+            if (-1 == end_flag_index) {
+                CLog.e(TAG, " not end tag");
                 continue;
             }
 
             CLog.i(TAG, "===========find end_tag========");
-
+            CLog.i(TAG, "parse_index:" + parse_index + " total_end_index:" + (end_flag_index - FREAME_LENGTH));
             arr = Arrays.copyOfRange(bytes, parse_index, end_flag_index - FREAME_LENGTH);
-
 
             parseTotalMode(model, arr);
 
@@ -179,12 +178,15 @@ public class CodoonShoesParseHelper {
                     flag_parse = FLAG_START;
                 }
 
-                if(flag_parse == flag){
-                    return  parse_index;
-                }else if(isNeedSeq){
-                    CLog.e(TAG, "tag not match,quit this sport... ");
-                    return -1;
+                if(-1 != flag_parse){
+                    if(flag_parse == flag){
+                        return  parse_index;
+                    }else if(isNeedSeq){
+                        CLog.e(TAG, "tag not match,quit this sport... find:" + Integer.toHexString(flag) + " parse:" + Integer.toHexString(flag_parse));
+                        return -1;
+                    }
                 }
+
             }
         }
         return -1;
@@ -199,13 +201,13 @@ public class CodoonShoesParseHelper {
 
         CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
-        model.step = byteBuffer.getShort() & 0xff;
-        model.distance = (byteBuffer.getShort() & 0xff) / 10.0f;
-        model.frontOnStep = byteBuffer.getShort() & 0xff;
-        model.backOnStep = byteBuffer.getShort() & 0xff;
-        model.inFootCount = byteBuffer.getShort() & 0xff;
-        model.outFootCount = byteBuffer.getShort() & 0xff;
-        model.cachPower = byteBuffer.getShort() & 0xff;
+        model.step = byteBuffer.getShort() & 0x00ffff;
+        model.distance = (byteBuffer.getShort() & 0x00ffff) / 10.0f;
+        model.frontOnStep = byteBuffer.getShort() & 0x00ffff;
+        model.backOnStep = byteBuffer.getShort() & 0x00ffff;
+        model.inFootCount = byteBuffer.getShort() & 0x00ffff;
+        model.outFootCount = byteBuffer.getShort() & 0x00ffff;
+        model.cachPower = (byteBuffer.getShort() & 0x00ffff) / 10.0f;
 
         CLog.i(TAG, model.toString());
         return model;
@@ -218,19 +220,23 @@ public class CodoonShoesParseHelper {
      * @return
      */
     public CodoonShoesMinuteModel parseMinutePercents(byte[] arr){
+        if(null == arr || arr.length < 8) return null;
+
         CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
-        model.step = byteBuffer.getShort() & 0xff;
-        model.inFootCount = byteBuffer.getChar() & 0xff;
-        model.outFootCount = byteBuffer.getChar() & 0xff;
-        model.frontOnStep = byteBuffer.getChar() & 0xff;
-        model.backOnStep = byteBuffer.getChar() & 0xff;
-        model.cachPower = byteBuffer.getShort() & 0xff;
+        model.step = byteBuffer.getShort() & 0x00ffff;
+        model.inFootCount = byteBuffer.get() & 0xff;
+        model.outFootCount = byteBuffer.get() & 0xff;
+        model.frontOnStep = byteBuffer.get() & 0xff;
+        model.backOnStep = byteBuffer.get() & 0xff;
+        model.cachPower = (byteBuffer.getShort() & 0x00ffff) / 10.0f;
 
         CLog.i(TAG, model.toString());
 
         return model;
     }
+
+
 
     /**
      * 解析汇总数据
@@ -241,15 +247,20 @@ public class CodoonShoesParseHelper {
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
         model.total_dis = byteBuffer.getInt() / 10.0f;
         model.total_cal = byteBuffer.getInt() / 10.0f;
-        model.sprintCounts = byteBuffer.getShort() & 0xff;
-        model.avgTouchTime = byteBuffer.getShort() & 0xff;
-        model.avgHoldTime = byteBuffer.getShort() & 0xff;
-        model.flyTime = byteBuffer.getShort() & 0xff;
+        model.sprintCounts = byteBuffer.getShort() & 0x00ffff;
+        model.avgTouchTime = byteBuffer.getShort() & 0x00ffff;
+        model.avgHoldTime = byteBuffer.getShort() & 0x00ffff;
+        model.flyTime = byteBuffer.getShort() & 0x00ffff;
         /**here to parse avpace**/
-        int km =(int) model.total_dis/ 1000;
-        for(int i =0; i < km; i++){
-            model.paces.add(Long.valueOf(byteBuffer.getShort() & 0xff));
-        }
+        int km =byteBuffer.getShort() & 0x00ffff;;
+        if(km > 0) model.paces = new ArrayList<>();
+        try {
+            for(int i =0; i < km; i++){
+                CLog.i(TAG, "parse  pace of km :" + i  + " total is " + km);
+                model.paces.add(Long.valueOf(byteBuffer.getShort() & 0x00ffff));
+            }
+        }catch (Exception e){}
+
         CLog.i(TAG, model.toString());
     }
 
@@ -277,7 +288,7 @@ public class CodoonShoesParseHelper {
      * @param arrays
      * @return
      */
-    public static long getSysTime(byte[] arrays) {
+    public  long getSysTime(byte[] arrays) {
         Calendar mCalendar = Calendar.getInstance();
         int year = 0;
         int month = 0;
@@ -328,4 +339,5 @@ public class CodoonShoesParseHelper {
         return result == -1 ? -1 : (result - FREAME_LENGTH) / FREAME_LENGTH;
 
     }
+
 }

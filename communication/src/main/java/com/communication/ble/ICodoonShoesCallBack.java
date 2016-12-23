@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public interface ICodoonShoesCallBack extends ISyncDataCallback {
-    public void onResponse(byte[] data);
+    public void onResponse(String  str);
 
     /**
      * 准备同步数据

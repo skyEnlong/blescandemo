@@ -2,11 +2,18 @@ package com.example.enlong.blescandemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.communication.bean.CodoonHealthDevice;
+import com.communication.bean.CodoonShoesMinuteModel;
+import com.communication.data.DataUtil;
 import com.communication.shoes.CodoonShoesCommandHelper;
+import com.communication.shoes.CodoonShoesParseHelper;
+
+import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,14 +32,20 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     private TextView receiveText;
     private TextView sendText;
     private CodoonShoesCommandHelper commandHelper;
-
-
+    private boolean isStartSport;
+    private CodoonShoesParseHelper parseHelper;
+    private Handler mHandler;
+    private ScrollView scrollView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.demo_shoes);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+
+        scrollView = (ScrollView) findViewById(R.id.scrollView_rec);
+        mHandler = new Handler();
+        parseHelper = new CodoonShoesParseHelper();
         manger = new DemoSyncManger(this.getApplicationContext());
         scanMananfer = new BleScanMananfer(this);
         sendText = (TextView) findViewById(R.id.textView2);
@@ -68,9 +81,22 @@ public class DemoShoes extends Activity implements View.OnClickListener{
             @Override
             public void onDeviceSearch(CodoonHealthDevice dev) {
                 if (dev.device_type_name.toLowerCase().equals("cod_shoes")) {
-                    scanMananfer.stopScan();
-                    sendText.setText("开始连接");
-                    manger.start(dev);
+                    if(isStartSport){
+                        DataUtil.DebugPrint(dev.manufacturer);
+                        byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 21);
+                        CodoonShoesMinuteModel data = parseHelper.parseMinutePercents(brod);
+                        if(null != data) {
+                            MsgEvent event = new MsgEvent();
+                            event.msg = data.toString();
+                            event.event_id = 1;
+                            EventBus.getDefault().post(event);
+                        }
+                    }else {
+                        scanMananfer.stopScan();
+                        sendText.setText("开始连接");
+                        manger.start(dev);
+                    }
+
                 }
             }
         });
@@ -153,11 +179,14 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     @OnClick(R.id.button2)
     void startRUn() {
         manger.writeCommand(commandHelper.getStartRunCommand());
+        isStartSport = true;
     }
 
     @OnClick(R.id.button17)
     void stopRun() {
         manger.writeCommand(commandHelper.getStopRunCommand());
+        isStartSport = false;
+        scanMananfer.stopScan();
     }
 
     @OnClick(R.id.button14)
@@ -171,11 +200,34 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        scanMananfer.stopScan();
+        manger.disConnect();
     }
 
     public void onEventMainThread(MsgEvent event) {
         if(event.event_id == 0){
-            receiveText.setText(event.msg);
+            receiveText.setText(receiveText.getText() + "\n" +event.msg);
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
+
+            if(event.msg.contains("开始跑步")){
+                manger.disConnect();
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        CLog.i("enlong", "begin seartch");
+                        isStartSport = true;
+                        scanMananfer.startScan();
+                    }
+                }, 3000);
+
+            }
         }else {
             sendText.setText(event.msg);
 

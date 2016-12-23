@@ -6,10 +6,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.communication.data.CLog;
-import com.communication.data.DataUtil;
 import com.communication.data.ISyncCallBack;
 import com.communication.data.TimeoutCheck;
 import com.communication.util.MobileUtil;
@@ -69,8 +67,11 @@ public abstract class BaseDeviceSyncManager implements TimeoutCheck.ITimeoutCall
                                     getIsAutoConnect());
                             break;
                         case NOTIFY_SUCEESS:
-                            if (null != mBaseCallBack)
+                            if (null != mBaseCallBack){
+                                CLog.i(TAG, "tell connect success");
                                 mBaseCallBack.onConnectSuccessed();
+                            }
+
                             break;
                         default:
                             break;

@@ -1,5 +1,7 @@
 package com.communication.bean;
 
+import com.communication.util.CommonUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -41,8 +43,8 @@ public class CodoonShoesModel implements Serializable{
                 ", avgTouchTime=" + avgTouchTime +
                 ", avgHoldTime=" + avgHoldTime +
                 ", flyTime=" + flyTime +
-                ", startDateTime=" + startDateTime +
-                ", endDateTIme=" + endDateTIme +
+                ", startDateTime=" + CommonUtils.getDate(startDateTime) +
+                ", endDateTIme=" + CommonUtils.getDate(endDateTIme) +
                 ", total_dis=" + total_dis +
                 ", total_cal=" + total_cal +
                 '}';

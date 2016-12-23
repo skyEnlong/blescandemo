@@ -1,12 +1,18 @@
 package com.communication.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by workEnlong on 2015/6/12.
  */
 public class CommonUtils {
+	public static  String getDate(long time){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return format.format(new Date(time));
+	}
 
 	/**
 	 * @param datas
