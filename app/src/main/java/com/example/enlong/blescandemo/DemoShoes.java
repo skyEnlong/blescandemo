@@ -12,7 +12,11 @@ import com.communication.bean.CodoonShoesMinuteModel;
 import com.communication.data.DataUtil;
 import com.communication.shoes.CodoonShoesCommandHelper;
 import com.communication.shoes.CodoonShoesParseHelper;
+import com.communication.util.FileUtil;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
@@ -26,7 +30,7 @@ import de.greenrobot.event.EventBus;
 public class DemoShoes extends Activity implements View.OnClickListener{
 
 
-
+    private String upFile;
     private DemoSyncManger manger;
     private BleScanMananfer scanMananfer;
     private TextView receiveText;
@@ -72,6 +76,31 @@ public class DemoShoes extends Activity implements View.OnClickListener{
         for(int id : butnId){
             findViewById(id).setOnClickListener(this);
         }
+
+        String[] fs = new String[0];
+        try {
+            fs = getAssets().list("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String fh = FileUtil.getEphemerisPath(this);
+
+        upFile = fh + File.separator + fs[0];
+        File f = new File(upFile);
+        if(!f.exists()){
+            InputStream stream = null;
+            try {
+                stream = getAssets().open(fs[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            FileUtil.saveAsFile(fh, fs[0], stream);
+            com.communication.data.CLog.i("enlong", "file is exists:" + f.getAbsolutePath());
+
+        }
+
+
     }
 
     @OnClick(R.id.button3)
@@ -87,7 +116,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                         CodoonShoesMinuteModel data = parseHelper.parseMinutePercents(brod);
                         if(null != data) {
                             MsgEvent event = new MsgEvent();
-                            event.msg = data.toString();
+                            event.msg = "广播得到数据：" + data.toString();
                             event.event_id = 1;
                             EventBus.getDefault().post(event);
                         }
@@ -157,7 +186,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     @OnClick(R.id.button12)
     void startUpGrade() {
-        manger.startUpgrade();
+        manger.startUpgrade(upFile);
     }
 
     @OnClick(R.id.button8)

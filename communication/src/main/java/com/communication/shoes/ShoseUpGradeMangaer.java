@@ -48,6 +48,7 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
         bleManager.setConnectCallBack(this);
         setFrameDelay(0);
         commandHelper = new BaseCommandHelper();
+
     }
 
     @Override
@@ -94,6 +95,7 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
                     }else {
                         retryCount = 0; //超过三次，置0
                     }
+                    stopTimeCheckOut();
                     upgradeCallback.onCheckBootResult(isSuccess, retryCount);
 
                     break;
@@ -250,6 +252,7 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
         CLog.d(TAG, "receivedFailed()");
         if (isVerify) {
             isVerify = false;
+            stopTimeCheckOut();
             upgradeCallback.onCheckBootResult(true, retryCount);
         } else {
             upgradeCallback.onTimeOut();

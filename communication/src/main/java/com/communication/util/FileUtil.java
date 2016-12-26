@@ -154,7 +154,7 @@ public class FileUtil {
     public static void saveAsFile(String desPath, String fileName, byte[] data) {
         File desDir = new File(desPath);
         if (desDir == null || !desDir.exists()) {
-            desDir.mkdir();
+            desDir.mkdirs();
         }
 
         File file = new File(desPath + File.separator + fileName);

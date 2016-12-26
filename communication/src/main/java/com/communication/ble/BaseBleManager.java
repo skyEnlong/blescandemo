@@ -347,6 +347,9 @@ public abstract class BaseBleManager {
             }
         } else {
             mBluetoothGatt.connect();
+            if (Build.VERSION.SDK_INT >= 21) {
+                mBluetoothGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+            }
         }
     }
 

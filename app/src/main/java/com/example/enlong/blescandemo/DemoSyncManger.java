@@ -11,6 +11,7 @@ import com.communication.ble.CodoonShoesSyncManager;
 import com.communication.ble.ICodoonShoesCallBack;
 import com.communication.data.AccessoryValues;
 import com.communication.data.DataUtil;
+import com.communication.data.DeviceUpgradeCallback;
 import com.communication.gpsband.GpsBandParseUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -25,7 +26,7 @@ import de.greenrobot.event.EventBus;
  * Created by enlong on 2016/12/8.
  */
 
-public class DemoSyncManger implements ICodoonShoesCallBack {
+public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallback {
 
     private CodoonShoesSyncManager syncManager;
     private CodoonHealthDevice device;
@@ -227,6 +228,42 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
     }
 
     @Override
+    public void onChangeToBootMode() {
+        MsgEvent event = new MsgEvent();
+        event.msg = "onChangeToBootMode";
+        EventBus.getDefault().post(event);
+
+    }
+
+    @Override
+    public void onGetBootVersion(String version) {
+        MsgEvent event = new MsgEvent();
+        event.msg = "onGetBootVersion" + version;
+        EventBus.getDefault().post(event);
+    }
+
+    @Override
+    public void onConnectBootSuccess() {
+        MsgEvent event = new MsgEvent();
+        event.msg = "onConnectBootSuccess" ;
+        EventBus.getDefault().post(event);
+    }
+
+    @Override
+    public void onWriteFrame(int frame, int total) {
+        MsgEvent event = new MsgEvent();
+        event.msg = "onWriteFrame frame " + frame  + " total:"  + total ;
+        EventBus.getDefault().post(event);
+    }
+
+    @Override
+    public void onCheckBootResult(boolean isSuccess, int retryCount) {
+        MsgEvent event = new MsgEvent();
+        event.msg = "onCheckBootResult  " + isSuccess  + " retryCount:"  + retryCount ;
+        EventBus.getDefault().post(event);
+    }
+
+    @Override
     public void onTimeOut() {
 
     }
@@ -256,13 +293,16 @@ public class DemoSyncManger implements ICodoonShoesCallBack {
 
     }
 
-    public void startUpgrade() {
+    public void startUpgrade(String fs) {
+
         if(syncManager.isConnect()){
             MsgEvent event = new MsgEvent();
             event.msg = "开始升级";
             event.event_id = 1;
             EventBus.getDefault().post(event);
-
+            syncManager.startUpgrade(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device.address),
+                    fs,
+                    this);
         }else {
             MsgEvent event = new MsgEvent();
             event.msg = "连接以段开， 重新连接中";
