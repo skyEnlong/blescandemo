@@ -31,13 +31,19 @@
         tools:replace="icon,label,theme">
 
         <activity android:name=".DemoShoes" android:screenOrientation="portrait">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".DemoUnion" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <activity
             android:name=".MainActivity"
@@ -77,6 +83,11 @@
                 android:name="android.content.SyncAdapter"
 
                 android:resource="@xml/syncadapter" />
+        </service>
+        <service android:name="com.unionpay.blepayservice.PayService">
+            <intent-filter>
+                <action android:name="com.unionpay.blepayservice.PayService" />
+            </intent-filter>
         </service>
 
         <service android:name=".AccountAuthenticatorService"

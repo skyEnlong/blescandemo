@@ -175,12 +175,12 @@ public abstract class BaseDeviceSyncManager implements TimeoutCheck.ITimeoutCall
         mTimeoutCheck.setIsConnection(false);
         mTimeoutCheck.startCheckTimeout();
         isStart = true;
-        Message msg = mHandler.obtainMessage(SEND_DATA);
-        msg.what = SEND_DATA;
-        msg.obj = data;
-        mHandler.sendMessageDelayed(msg, EACH_FRAME_DELAY);
+//        Message msg = mHandler.obtainMessage(SEND_DATA);
+//        msg.what = SEND_DATA;
+//        msg.obj = data;
+//        mHandler.sendMessageDelayed(msg, EACH_FRAME_DELAY);
 
-
+        bleManager.writeDataToDevice(data);
         lastData = data;
 
     }

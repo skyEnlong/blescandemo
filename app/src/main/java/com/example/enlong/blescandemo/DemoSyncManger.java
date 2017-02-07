@@ -249,11 +249,18 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
         EventBus.getDefault().post(event);
     }
 
+    private int lastProgress = 0;
     @Override
     public void onWriteFrame(int frame, int total) {
-        MsgEvent event = new MsgEvent();
-        event.msg = "onWriteFrame frame " + frame  + " total:"  + total ;
-        EventBus.getDefault().post(event);
+        int pro = frame * 100 / total;
+        if(lastProgress != pro){
+            lastProgress = pro;
+            MsgEvent event = new MsgEvent();
+            event.msg = "onWriteFrame progress percents " + lastProgress ;
+            EventBus.getDefault().post(event);
+
+        }
+
     }
 
     @Override
@@ -284,7 +291,7 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
             syncManager.writeDataToDevice(data);
         }else {
             MsgEvent event = new MsgEvent();
-            event.msg = "连接以段开， 重新连接中";
+            event.msg = "连接已段开， 重新连接中";
             event.event_id = 1;
             EventBus.getDefault().post(event);
 

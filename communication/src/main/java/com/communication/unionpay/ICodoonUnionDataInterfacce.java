@@ -10,7 +10,7 @@ import java.util.HashMap;
  * Created by workEnlong on 2015/6/25.
  */
 public interface ICodoonUnionDataInterfacce extends ISyncCallBack{
-
+        void onResponse(String data);
         void onDeviceUnBind(String address);
         void onDeviceBind(String address);
 

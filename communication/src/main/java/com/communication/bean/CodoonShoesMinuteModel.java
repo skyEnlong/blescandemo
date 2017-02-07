@@ -53,12 +53,11 @@ public class CodoonShoesMinuteModel implements Serializable {
     public String toString() {
         return "{" +
                 "step=" + step +
-                ", distance=" + distance +
-                ", frontOnStep=" + frontOnStep +
-                ", backOnStep=" + backOnStep +
-                ", outFootCount=" + outFootCount +
-                ", inFootCount=" + inFootCount +
-                ", cachPower=" + cachPower +
+                ", front=" + frontOnStep +
+                ", back=" + backOnStep +
+                ", out=" + outFootCount +
+                ", in=" + inFootCount +
+                ", cp=" + cachPower +
                 '}';
     }
 }

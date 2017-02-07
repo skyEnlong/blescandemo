@@ -41,9 +41,9 @@ public class DataUtil {
 		for (int i = 0; i < outData.length; i++) {
 
 			str += CommonUtils.getHexString(outData[i]) + "   ";
-			if(i % 8 == 7 ){
-				str += "\n";
-			}
+//			if(i % 8 == 7 ){
+//				str += "\n";
+//			}
 		}
 
 		CLog.i(TAG, str );

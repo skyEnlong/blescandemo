@@ -13,9 +13,7 @@ import com.communication.bean.CodoonShoesMinuteModel;
 import com.communication.data.DataUtil;
 import com.communication.shoes.CodoonShoesCommandHelper;
 import com.communication.shoes.CodoonShoesParseHelper;
-import com.communication.util.FileUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -24,14 +22,16 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
- * Created by enlong on 2016/12/7.
+ * Created by enlong on 2017/2/6.
  */
 
-public class DemoShoes extends Activity implements View.OnClickListener{
+public class DemoUnion extends Activity implements View.OnClickListener
+
+{
 
 
     private String upFile;
-    private DemoSyncManger manger;
+    private UnionPayDeviceConnector manger;
     private BleScanMananfer scanMananfer;
     private TextView receiveText;
     private TextView sendText;
@@ -40,17 +40,18 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     private CodoonShoesParseHelper parseHelper;
     private Handler mHandler;
     private ScrollView scrollView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.demo_shoes);
+        setContentView(R.layout.demo_union);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
         scrollView = (ScrollView) findViewById(R.id.scrollView_rec);
         mHandler = new Handler();
         parseHelper = new CodoonShoesParseHelper();
-        manger = new DemoSyncManger(this.getApplicationContext());
+        manger = new UnionPayDeviceConnector(this.getApplicationContext());
         scanMananfer = new BleScanMananfer(this);
         sendText = (TextView) findViewById(R.id.textView2);
         receiveText = (TextView) findViewById(R.id.textView4);
@@ -73,8 +74,10 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 R.id.button14,
                 R.id.button17};
 
-        for(int id : butnId){
-            findViewById(id).setOnClickListener(this);
+        for (int id : butnId) {
+            View v = findViewById(id);
+            if (null != v)
+                v.setOnClickListener(this);
         }
 
         String[] fs = new String[0];
@@ -84,23 +87,6 @@ public class DemoShoes extends Activity implements View.OnClickListener{
             e.printStackTrace();
         }
 
-        String fh = FileUtil.getEphemerisPath(this);
-
-        upFile = fh + File.separator + "app_codoon_2.bin";
-        File f = new File(upFile);
-        if(!f.exists()){
-//            InputStream stream = null;
-//            try {
-//                stream = getAssets().open(fs[0]);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            FileUtil.saveAsFile(fh, fs[0], stream);
-//            com.communication.data.CLog.i("enlong", "file is exists:" + f.getAbsolutePath());
-            Toast.makeText(this, "请将升级文件至于 " + upFile, Toast.LENGTH_SHORT).show();
-        }
-
-
     }
 
     @OnClick(R.id.button3)
@@ -109,24 +95,24 @@ public class DemoShoes extends Activity implements View.OnClickListener{
         scanMananfer.setCallBack(new OnDeviceSearch<CodoonHealthDevice>() {
             @Override
             public void onDeviceSearch(CodoonHealthDevice dev) {
-                if (dev.device_type_name.toLowerCase().equals("cod_shoes")) {
-                    if(isStartSport){
+                if (dev.device_type_name.toUpperCase().startsWith("UPWEAR")) {
+                    if (isStartSport) {
                         DataUtil.DebugPrint(dev.manufacturer);
                         byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 21);
                         CodoonShoesMinuteModel data = parseHelper.parsePercentsInBroad(brod);
-                        if(null != data) {
+                        if (null != data) {
                             MsgEvent event = new MsgEvent();
                             event.msg = "广播得到数据：" + data.toString();
                             event.event_id = 1;
                             EventBus.getDefault().post(event);
                         }
-                    }else {
+                    } else {
                         scanMananfer.stopScan();
                         MsgEvent event = new MsgEvent();
                         event.msg = "开始连接：";
                         event.event_id = 0;
                         EventBus.getDefault().post(event);
-                        manger.start(dev);
+                        manger.startBindDevice(dev);
                     }
 
                 }
@@ -143,15 +129,11 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     }
 
-    @OnClick(R.id.button15)
-    void bind() {
-        manger.writeCommand(commandHelper.getBindCommand());
-    }
 
 
     @OnClick(R.id.button4)
     void getVersion() {
-        manger.writeCommand(commandHelper.getVersionCommand());
+        manger.getVersion();
     }
 
 
@@ -163,12 +145,14 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     @OnClick(R.id.button16)
     void getAccessoryBD() {
-        manger.writeCommand(commandHelper.getAccessoryBDCommand());
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
+//        manger.writeCommand(commandHelper.getAccessoryBDCommand());
     }
 
     @OnClick(R.id.button6)
     void getShoesState() {
-        manger.writeCommand(commandHelper.getShoesStateComand());
+//        manger.writeCommand(commandHelper.getShoesStateComand());
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button7)
@@ -184,24 +168,26 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     @OnClick(R.id.button11)
     void getTotalKm() {
-        manger.writeCommand(commandHelper.getTotalKm());
+//        manger.writeCommand(commandHelper.getTotalKm());
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button12)
     void startUpGrade() {
-        File f = new File(upFile);
-        if(!f.exists()){
-            Toast.makeText(this, "请将升级文件至于 " + upFile, Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        File f = new File(upFile);
+//        if (!f.exists()) {
+//            Toast.makeText(this, "请将升级文件至于 " + upFile, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
 
-        manger.startUpgrade(upFile);
+//        manger.startUpgrade(upFile);
     }
 
     @OnClick(R.id.button8)
     void getSyncReady() {
-        manger.writeCommand(commandHelper.getSyncReadyCommand());
-
+//        manger.writeCommand(commandHelper.getSyncReadyCommand());
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button9)
@@ -211,20 +197,23 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     @OnClick(R.id.button10)
     void beginSyncRun() {
-        manger.writeCommand(commandHelper.getTotalRunFrameCommand());
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
+//        manger.writeCommand(commandHelper.getTotalRunFrameCommand());
     }
 
     @OnClick(R.id.button2)
     void startRUn() {
-        manger.writeCommand(commandHelper.getStartRunCommand());
-        isStartSport = true;
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
+//        manger.writeCommand(commandHelper.getStartRunCommand());
+//        isStartSport = true;
     }
 
     @OnClick(R.id.button17)
     void stopRun() {
-        manger.writeCommand(commandHelper.getStopRunCommand());
-        isStartSport = false;
-        scanMananfer.stopScan();
+//        manger.writeCommand(commandHelper.getStopRunCommand());
+//        isStartSport = false;
+//        scanMananfer.stopScan();
+        Toast.makeText(this, "not support!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.button14)
@@ -239,12 +228,12 @@ public class DemoShoes extends Activity implements View.OnClickListener{
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         scanMananfer.stopScan();
-        manger.disConnect();
+        manger.stop();
     }
 
     public void onEventMainThread(MsgEvent event) {
-        if(event.event_id == 0){
-            receiveText.setText(receiveText.getText() + "\n" +event.msg);
+        if (event.event_id == 0) {
+            receiveText.setText(receiveText.getText() + "\n" + event.msg);
 
             mHandler.post(new Runnable() {
                 @Override
@@ -253,20 +242,8 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 }
             });
 
-            if(null != event.msg && event.msg.contains("开始跑步")){
-                manger.disConnect();
 
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        CLog.i("enlong", "begin seartch");
-                        isStartSport = true;
-                        scanMananfer.startScan();
-                    }
-                }, 3000);
-
-            }
-        }else {
+        } else {
             sendText.setText(event.msg);
 
         }
@@ -295,7 +272,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 updateTime();
                 break;
             case R.id.button15:
-                bind();
+               setClock();
                 break;
             case R.id.button6:
                 getShoesState();
@@ -328,5 +305,14 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 stopRun();
                 break;
         }
+    }
+
+    private void setClock() {
+        byte[] data =new byte[13];
+        for(int i =0; i < data.length; i++){
+            data[i] = 0;
+        }
+        manger.writeCommand(commandHelper.getSetClokCmd(data));
+
     }
 }

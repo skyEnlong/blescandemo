@@ -4,7 +4,7 @@ package com.communication.unionpay;
  * Created by workEnlong on 2015/6/11.
  */
 public interface UnionPayCommand {
-    public final String TAG = "union_pay";
+    public final String TAG = "ble";
     /**
      * BTC_INFO	00h 01h	取蓝牙智能卡版本信息
      BTC_IDLE	00h 02h	设置安全芯片自动下电空闲时间

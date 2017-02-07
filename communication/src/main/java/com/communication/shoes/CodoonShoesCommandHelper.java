@@ -43,7 +43,7 @@ public class CodoonShoesCommandHelper extends BaseCommandHelper{
         return getCommand(CodoonShoesCommand.CODE_READY_DATA);
     }
 
-    /**clear**/
+    /**clear data**/
     public byte[] getClearCommand(){
         return getCommand(CodoonShoesCommand.CODE_CLEAR_SPORT_DATA);
     }
@@ -107,4 +107,20 @@ public class CodoonShoesCommandHelper extends BaseCommandHelper{
         return getCommand(CodoonShoesCommand.CODE_UPDATE_USER_INFO, datas);
     }
 
+    /**
+     * 获取电量、闹钟等情况
+     * @return
+     */
+    public byte[] getClockInfoCmd(){
+        return getCommand(CodoonShoesCommand.CODE_GET_CLOCK);
+    }
+
+    /**
+     * 设置闹钟
+     * @param clocks
+     * @return
+     */
+    public byte[] getSetClokCmd(byte[] clocks){
+        return getCommand(CodoonShoesCommand.CODE_SET_CLOCK, clocks);
+    }
 }

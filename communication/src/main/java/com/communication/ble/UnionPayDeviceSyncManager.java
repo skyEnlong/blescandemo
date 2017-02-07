@@ -3,9 +3,7 @@ package com.communication.ble;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +11,7 @@ import android.util.Log;
 
 import com.communication.data.AccessoryConfig;
 import com.communication.data.CLog;
+import com.communication.data.DataUtil;
 import com.communication.data.TimeoutCheck;
 import com.communication.provider.KeyConstants;
 import com.communication.unionpay.CodoonDataHelper;
@@ -115,6 +114,9 @@ public class UnionPayDeviceSyncManager implements UnionPayCommand,
 						mTimeoutCheck.stopCheckTimeout();
 
 						curSsc = UnionPayResponseHelper.dealSsc(ssc);
+
+						responseShow(data);
+
 						if (status == BTC_IO_OK) {
 
 
@@ -305,6 +307,9 @@ public class UnionPayDeviceSyncManager implements UnionPayCommand,
 	 * @return
 	 */
 	public boolean writeCmdAndDataToDevice(int cmd, byte[] byte_data) {
+		if(cmd == BTC_DATA){
+			isReceiveSportData = true;
+		}
 		if (!isBusyWring) {
 			bufferOder.clear();
 			codPayCallback = null;
@@ -336,10 +341,15 @@ public class UnionPayDeviceSyncManager implements UnionPayCommand,
 	public boolean writeDataToDevice(int[] data) {
 		isResUnion = false;
 		codPayCallback = null;
-		isReceiveSportData = true;
+
 		return writeCmdAndDataToDevice(BTC_DATA, CommonUtils.intToByte(data));
 	}
 
+	public boolean writeDataToDevice(byte[] data) {
+		isResUnion = false;
+		codPayCallback = null;
+		return writeCmdAndDataToDevice(BTC_DATA, data);
+	}
 	/**
 	 * 透传银联命令
 	 * 
@@ -400,10 +410,11 @@ public class UnionPayDeviceSyncManager implements UnionPayCommand,
 		mTimeoutCheck.startCheckTimeout();
 
 		sendDataIndex = 0;
-		Message msg = new Message();
-		msg.what = SEND_DATA;
-		msg.obj = curCommandHelper.getFrameByIndex(sendDataIndex++);
-		mHandler.sendMessage(msg); // careful
+		bleManager.writeDataToDevice(curCommandHelper.getFrameByIndex(sendDataIndex++));
+//		Message msg = new Message();
+//		msg.what = SEND_DATA;
+//		msg.obj = curCommandHelper.getFrameByIndex(sendDataIndex++);
+//		mHandler.sendMessage(msg); // careful
 
 //		int frameCount = curCommandHelper.getFrameCount();
 //		 for (int i = 0; i < frameCount; i++) {
@@ -829,5 +840,11 @@ public class UnionPayDeviceSyncManager implements UnionPayCommand,
 		// mHandler.removeMessages(SEND_DATA);
 		// mHandler.sendMessageDelayed(msg, EVERY_DATA_SEND_DELAY); // careful
 		// }
+	}
+
+	private void responseShow(byte[] data){
+		for (ICodoonUnionDataInterfacce callback : mISyncDataCallbacks){
+			callback.onResponse(DataUtil.DebugPrint(data));
+		}
 	}
 }

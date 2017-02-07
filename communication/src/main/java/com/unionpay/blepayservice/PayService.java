@@ -1,14 +1,11 @@
 package com.unionpay.blepayservice;
 
-import java.util.Arrays;
-
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.RemoteException;
 
 import com.communication.ble.UnionPayDeviceSyncManager;
@@ -21,7 +18,6 @@ import com.communication.unionpay.UnionPayCommandHelper;
 import com.communication.unionpay.UnionPayResponseHelper;
 import com.communication.util.CommonUtils;
 import com.communication.util.MobileUtil;
-import com.communication.util.UnionPayConstant;
 
 /**
  * Created by workEnlong on 2015/6/11.
@@ -283,6 +279,10 @@ public class PayService extends Service implements UnionPayCommand,
 		
 		/////////////////for sport///////////////
 		public void writeDataToDevice(int[] data){
+			mSyncManager.writeDataToDevice(data);
+		}
+
+		public void writeDataToDevice(byte[] data){
 			mSyncManager.writeDataToDevice(data);
 		}
 		

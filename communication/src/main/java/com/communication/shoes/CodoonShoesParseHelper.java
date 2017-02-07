@@ -9,6 +9,7 @@ import com.communication.data.CLog;
 import com.communication.util.CommonUtils;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -213,6 +214,27 @@ public class CodoonShoesParseHelper {
         return model;
     }
 
+    /**
+     * 解析每分钟跑步数据的百分比
+     * @param arr
+     * @return
+     */
+    public CodoonShoesMinuteModel parsePercentsInBroad(byte[] arr){
+        if(null == arr || arr.length < 8) return null;
+
+        CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
+        ByteBuffer byteBuffer = ByteBuffer.wrap(arr).order(ByteOrder.LITTLE_ENDIAN);
+        model.step = byteBuffer.getShort() & 0x00ffff;
+        model.inFootCount = byteBuffer.get() & 0xff;
+        model.outFootCount = byteBuffer.get() & 0xff;
+        model.frontOnStep = byteBuffer.get() & 0xff;
+        model.backOnStep = byteBuffer.get() & 0xff;
+        model.cachPower = (byteBuffer.getShort() & 0x00ffff) / 10.0f;
+
+        CLog.i(TAG, model.toString());
+
+        return model;
+    }
 
     /**
      * 解析每分钟跑步数据的百分比

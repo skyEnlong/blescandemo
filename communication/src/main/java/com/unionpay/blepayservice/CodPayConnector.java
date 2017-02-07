@@ -1,16 +1,17 @@
 package com.unionpay.blepayservice;
 
-import java.util.List;
-
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.communication.unionpay.ICodoonUnionDataInterfacce;
 import com.unionpay.blepayservice.PayService.UnionPayService;
+
+import java.util.List;
 
 public class CodPayConnector {
 	private UnionPayService mSyncManager;
@@ -63,6 +64,7 @@ public class CodPayConnector {
 			public void onServiceConnected(ComponentName name, IBinder service) {
  				// binder = IBLEService.Stub.asInterface(service);
 				mSyncManager = (UnionPayService) service;
+				Log.i("ble", "cod service bind success");
 				
 			}
 

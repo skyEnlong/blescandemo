@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -81,7 +82,11 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
 
 
                 case ShoseCommand.RES_BOOT_TRANS_DATA:
-                    CLog.i("shose", "hase send 15 frame and curFrame:" + curFrame);
+                    ByteBuffer buffer = ByteBuffer.wrap(content);
+                    int frame = buffer.getShort() & 0x00ffff;
+
+                    CLog.i(TAG, "receive each 16 frame check:" + frame + " and cur:" + curFrame);
+                    writeFrameToDevice(curFrame);
                     break;
 
                 case ShoseCommand.RES_BOOT_TRANS_CHECK:
@@ -115,10 +120,16 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
 
         if(!isTransData) return;
 
+        upgradeCallback.onWriteFrame(curFrame, totalFrame);
+        curFrame++;
 
-            upgradeCallback.onWriteFrame(curFrame, totalFrame);
-            curFrame++;
-            writeFrameToDevice(curFrame);
+        if(curFrame % 16 == 0){
+            CLog.i(TAG, "shoseUp onWriteSuccess 16 frame now,wait res check");
+
+            return;
+        }
+
+        writeFrameToDevice(curFrame);
 
     }
 
@@ -258,6 +269,5 @@ public class ShoseUpGradeMangaer extends BaseDeviceSyncManager {
             upgradeCallback.onTimeOut();
         }
     }
-
 
 }
