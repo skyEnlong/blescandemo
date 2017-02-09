@@ -13,6 +13,7 @@ import com.communication.data.AccessoryValues;
 import com.communication.data.DataUtil;
 import com.communication.data.DeviceUpgradeCallback;
 import com.communication.gpsband.GpsBandParseUtil;
+import com.example.enlong.blescandemo.logic.TextToSpeecher;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -30,8 +31,9 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
 
     private CodoonShoesSyncManager syncManager;
     private CodoonHealthDevice device;
-
+    private Context mContext;
     public DemoSyncManger(Context mContext) {
+        this.mContext = mContext;
         syncManager = new CodoonShoesSyncManager(mContext, this);
     }
 
@@ -104,6 +106,13 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
     public void onGetRunState(CodoonShoesMinuteModel model) {
         MsgEvent event = new MsgEvent();
         event.msg = "跑步姿态数据：" + model.toString();
+        EventBus.getDefault().post(event);
+    }
+
+    @Override
+    public void onGetOriginData(String origin) {
+        MsgEvent event = new MsgEvent();
+        event.msg = "三轴数据：" + origin;
         EventBus.getDefault().post(event);
     }
 
@@ -218,6 +227,14 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
     @Override
     public void onSetFrindSwitchOver() {
 
+    }
+
+    @Override
+    public void onDeviceDisconnect() {
+        TextToSpeecher.getInstance(mContext).speechBluetoothLose();
+        MsgEvent event = new MsgEvent();
+        event.msg = "连接已段开";
+        EventBus.getDefault().post(event);
     }
 
     @Override

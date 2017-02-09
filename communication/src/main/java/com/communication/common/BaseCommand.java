@@ -5,23 +5,29 @@ package com.communication.common;
  */
 public class BaseCommand {
     public static final int CODE_CONNECT = 0x01;
+    public static final int RES_CONNECT = 0x81;
 
     /**获取设备类型和版本号**/
     public static final int CODE_VERSION = 0x02;
     public static final int RES_READ_VERSION = 0x82;
 
     /**获取设备ID　**/
-    public static final int RES_CONNECT = 0x81;
+    public static final int CODE_READ_ID = 0x04;
     public static final int RES_READ_ID = 0x84;
 
     /**更新设备时间**/
     public static final int CODE_UPDATE_TIME = 0x0A;
     public static final int RES_UPADTE_TIME = 0x8A;
 
-    public static final int CODE_CLEAR_SPORT_DATA = 0x14;
+    /**
+     * 读取设备时间
+     */
+    public static final int CODE_GET_TIME = 0x0B;
+    public static final int RES_GET_TIME = 0x8B;
 
-    /**读设备ID**/
-    public static final int CODE_READ_ID = 0x04;
+
+    /**清除数据指令**/
+    public static final int CODE_CLEAR_SPORT_DATA = 0x14;
     public static final int RES_CLEAR_SPORT_DATA = 0x94;
 
     /**更新用户信息**/
@@ -50,6 +56,9 @@ public class BaseCommand {
     public static final int CODE_BIND = 0x41;
     public static final int RES_BIND = 0xC1;
 
+
+    public static final int CODE_GET_ORIGIN_DATA = 0x17;
+    public static final int RES_GET_ORIGIN_DATA = 0x97;
 
 
 }

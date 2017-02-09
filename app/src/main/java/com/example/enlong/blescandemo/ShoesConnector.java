@@ -153,6 +153,11 @@ public class ShoesConnector implements IShoesSyncCallBack {
     }
 
     @Override
+    public void onDeviceDisconnect() {
+
+    }
+
+    @Override
     public void onConnectSuccessed() {
         MsgEvent event = new MsgEvent();
         event.event_id = 2;

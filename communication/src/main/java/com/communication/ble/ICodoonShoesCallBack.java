@@ -54,4 +54,6 @@ public interface ICodoonShoesCallBack extends ISyncDataCallback {
 
     /**读取跑步姿态数据**/
     void onGetRunState(CodoonShoesMinuteModel model);
+
+    void onGetOriginData(String origin);
 }

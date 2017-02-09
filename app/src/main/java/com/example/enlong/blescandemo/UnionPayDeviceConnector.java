@@ -284,6 +284,12 @@ public class UnionPayDeviceConnector implements ICodoonUnionDataInterfacce, Unio
     }
 
 
+    @Override
+    public void onDeviceDisconnect() {
+        MsgEvent event = new MsgEvent();
+        event.msg = "连接已段开";
+        EventBus.getDefault().post(event);
+    }
 
 
     public boolean isBusy(){

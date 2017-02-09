@@ -71,7 +71,10 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 R.id.button5,
                 R.id.button2,
                 R.id.button14,
-                R.id.button17};
+                R.id.button17,
+                R.id.button18,
+                R.id.button19
+        };
 
         for(int id : butnId){
             findViewById(id).setOnClickListener(this);
@@ -327,6 +330,20 @@ public class DemoShoes extends Activity implements View.OnClickListener{
             case R.id.button17:
                 stopRun();
                 break;
+            case R.id.button18:
+                getTime();
+                break;
+            case R.id.button19:
+                getOriginData();
+                break;
         }
+    }
+
+    private void getOriginData() {
+        manger.writeCommand(commandHelper.getOriginData());
+    }
+
+    private void getTime() {
+        manger.writeCommand(commandHelper.getDeviceTimeCmd());
     }
 }

@@ -222,6 +222,24 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
 
+        <Button
+            android:text="读取时间"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/button17"
+            android:layout_alignRight="@+id/button2"
+            android:layout_alignEnd="@+id/button2"
+            android:id="@+id/button18" />
 
+        <Button
+            android:text="读取三轴数据"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/button2"
+            android:layout_alignEnd="@+id/button2"
+            android:layout_below="@id/button18"
+
+            android:layout_marginTop="5dp"
+            android:id="@+id/button19" />
     </RelativeLayout>
 </LinearLayout>

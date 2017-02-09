@@ -123,4 +123,20 @@ public class CodoonShoesCommandHelper extends BaseCommandHelper{
     public byte[] getSetClokCmd(byte[] clocks){
         return getCommand(CodoonShoesCommand.CODE_SET_CLOCK, clocks);
     }
+
+    /**
+     * 获取时间
+     * @return
+     */
+    public byte[] getDeviceTimeCmd(){
+        return getCommand(CodoonShoesCommand.CODE_GET_TIME);
+    }
+
+    /**
+     * 获取原始的三轴传感器数据
+     * @return
+     */
+    public byte[] getOriginData(){
+        return getCommand(CodoonShoesCommand.CODE_GET_ORIGIN_DATA);
+    }
 }

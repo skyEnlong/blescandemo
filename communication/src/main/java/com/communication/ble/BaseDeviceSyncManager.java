@@ -2,6 +2,7 @@ package com.communication.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -120,7 +121,9 @@ public abstract class BaseDeviceSyncManager implements TimeoutCheck.ITimeoutCall
 
     @Override
     public void connectState(BluetoothDevice device, int status, int newState) {
-
+        if (null != mBaseCallBack && newState == BluetoothProfile.STATE_DISCONNECTED) {
+            mBaseCallBack.onDeviceDisconnect();
+        }
     }
 
     @Override

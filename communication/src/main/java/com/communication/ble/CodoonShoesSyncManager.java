@@ -19,6 +19,7 @@ import com.communication.shoes.CodoonShoesCommand;
 import com.communication.shoes.CodoonShoesParseHelper;
 import com.communication.shoes.ShoseUpGradeMangaer;
 import com.communication.util.CodoonEncrypt;
+import com.communication.util.CommonUtils;
 import com.communication.util.UserCollection;
 
 import java.io.ByteArrayOutputStream;
@@ -155,7 +156,14 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     @Override
     public void writeDataToDevice(byte[] data) {
         super.writeDataToDevice(data);
-        mTimeoutCheck.setTimeout(1000);
+        if((data[1] & 0xff) == CodoonShoesCommand.CODE_ACCESSORY_BD){
+
+            mTimeoutCheck.setTimeout(5000);
+        }else {
+            mTimeoutCheck.setTimeout(1000);
+
+        }
+
     }
 
     @Override
@@ -553,6 +561,16 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 mICodoonShoesCallBack.onGetRunState(model);
                 break;
 
+            case CodoonShoesCommand.RES_GET_TIME:
+                mICodoonShoesCallBack.onGetDeviceTime(CommonUtils.convertByteToHexString(resData));
+                break;
+
+            case CodoonShoesCommand.RES_GET_ORIGIN_DATA:
+                ByteBuffer bf = ByteBuffer.wrap(resData).order(ByteOrder.BIG_ENDIAN);
+                String xyz = " x: %d, y: %d, z: %d";
+                String bc = String.format(xyz, bf.getShort(),bf.getShort(),bf.getShort());
+                mICodoonShoesCallBack.onResponse(bc);
+                break;
         }
 
     }
