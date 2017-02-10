@@ -31,8 +31,6 @@ public interface ISyncDataCallback extends ISyncCallBack{
 	public void onGetUserInfo(int height,int weigh,int age,int gender,int stepLength,int runLength,int sportType,int goalValue);
 	
 	/**
-	 * 
-	 * @param datas{
 	 * curday_StartTime,  0
 	 * curday_During,    1
 	 * cur_Steps,  		2

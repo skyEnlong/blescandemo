@@ -3,6 +3,7 @@ package com.example.enlong.blescandemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -17,7 +18,10 @@ import com.communication.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,7 +31,7 @@ import de.greenrobot.event.EventBus;
  * Created by enlong on 2016/12/7.
  */
 
-public class DemoShoes extends Activity implements View.OnClickListener{
+public class DemoShoes extends Activity implements View.OnClickListener {
 
 
     private String upFile;
@@ -40,6 +44,11 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     private CodoonShoesParseHelper parseHelper;
     private Handler mHandler;
     private ScrollView scrollView;
+
+    private List<CodoonHealthDevice> ls = new ArrayList<>();
+    private final int MSG_DEVICE = 0x0001;
+    private final int MSG_CONNECT = 0x0002;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +57,48 @@ public class DemoShoes extends Activity implements View.OnClickListener{
         EventBus.getDefault().register(this);
 
         scrollView = (ScrollView) findViewById(R.id.scrollView_rec);
-        mHandler = new Handler();
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case MSG_DEVICE:
+
+
+                        //运动过程中  ， 打印广播数据
+                        if (isStartSport) {
+                            CodoonHealthDevice dev = (CodoonHealthDevice) msg.obj;
+                            DataUtil.DebugPrint(dev.manufacturer);
+                            byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 21);
+                            CodoonShoesMinuteModel data = parseHelper.parsePercentsInBroad(brod);
+                            if (null != data) {
+                                MsgEvent event = new MsgEvent();
+                                event.msg = "广播得到数据：" + data.toString();
+                                event.event_id = 1;
+                                EventBus.getDefault().post(event);
+                            }
+                        } else {
+                            if(!ls.contains(msg.obj)){
+                                ls.add((CodoonHealthDevice) msg.obj);
+                            }
+                        }
+
+
+                        break;
+
+                    case MSG_CONNECT:
+                        scanMananfer.stopScan();
+                        if (ls.size() == 0) {
+
+                            Toast.makeText(DemoShoes.this, "没有搜索到设备！", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Collections.sort(ls);
+                        connectDevice(ls.get(0));
+                        break;
+                }
+            }
+        };
         parseHelper = new CodoonShoesParseHelper();
         manger = new DemoSyncManger(this.getApplicationContext());
         scanMananfer = new BleScanMananfer(this);
@@ -76,7 +126,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 R.id.button19
         };
 
-        for(int id : butnId){
+        for (int id : butnId) {
             findViewById(id).setOnClickListener(this);
         }
 
@@ -91,7 +141,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
         upFile = fh + File.separator + "app_codoon_2.bin";
         File f = new File(upFile);
-        if(!f.exists()){
+        if (!f.exists()) {
 //            InputStream stream = null;
 //            try {
 //                stream = getAssets().open(fs[0]);
@@ -106,37 +156,36 @@ public class DemoShoes extends Activity implements View.OnClickListener{
 
     }
 
+    public void connectDevice(CodoonHealthDevice dev) {
+
+        MsgEvent event = new MsgEvent();
+        event.msg = "开始连接";
+        event.event_id = 0;
+        EventBus.getDefault().post(event);
+        manger.start(dev);
+    }
+
     @OnClick(R.id.button3)
     void startScanAndConnect() {
+        if (scanMananfer.isScan()) return;
+
         sendText.setText("开始扫描");
         scanMananfer.setCallBack(new OnDeviceSearch<CodoonHealthDevice>() {
             @Override
             public void onDeviceSearch(CodoonHealthDevice dev) {
                 if (dev.device_type_name.toLowerCase().equals("cod_shoes")) {
-                    if(isStartSport){
-                        DataUtil.DebugPrint(dev.manufacturer);
-                        byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 21);
-                        CodoonShoesMinuteModel data = parseHelper.parsePercentsInBroad(brod);
-                        if(null != data) {
-                            MsgEvent event = new MsgEvent();
-                            event.msg = "广播得到数据：" + data.toString();
-                            event.event_id = 1;
-                            EventBus.getDefault().post(event);
-                        }
-                    }else {
-                        scanMananfer.stopScan();
-                        MsgEvent event = new MsgEvent();
-                        event.msg = "开始连接：";
-                        event.event_id = 0;
-                        EventBus.getDefault().post(event);
-                        manger.start(dev);
-                    }
-
+                    Message message = mHandler.obtainMessage();
+                    message.what = MSG_DEVICE;
+                    message.obj = dev;
+                    mHandler.sendMessage(message);
                 }
             }
         });
-        scanMananfer.startScan();
 
+        scanMananfer.startScan();
+        ls.clear();
+        mHandler.removeMessages(MSG_CONNECT);
+        mHandler.sendEmptyMessageDelayed(MSG_CONNECT, 5000);
     }
 
     @OnClick(R.id.button)
@@ -193,7 +242,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     @OnClick(R.id.button12)
     void startUpGrade() {
         File f = new File(upFile);
-        if(!f.exists()){
+        if (!f.exists()) {
             Toast.makeText(this, "请将升级文件至于 " + upFile, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -246,8 +295,8 @@ public class DemoShoes extends Activity implements View.OnClickListener{
     }
 
     public void onEventMainThread(MsgEvent event) {
-        if(event.event_id == 0){
-            receiveText.setText(receiveText.getText() + "\n" +event.msg);
+        if (event.event_id == 0) {
+            receiveText.setText(receiveText.getText() + "\n" + event.msg);
 
             mHandler.post(new Runnable() {
                 @Override
@@ -256,7 +305,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 }
             });
 
-            if(null != event.msg && event.msg.contains("开始跑步")){
+            if (null != event.msg && event.msg.contains("开始跑步")) {
                 manger.disConnect();
 
                 mHandler.postDelayed(new Runnable() {
@@ -269,7 +318,7 @@ public class DemoShoes extends Activity implements View.OnClickListener{
                 }, 3000);
 
             }
-        }else {
+        } else {
             sendText.setText(event.msg);
 
         }
