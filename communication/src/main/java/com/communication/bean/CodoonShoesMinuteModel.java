@@ -43,11 +43,13 @@ public class CodoonShoesMinuteModel implements Serializable {
     public int inFootCount;
 
 
-
     /**
      * 缓冲击力
      **/
     public float cachPower;
+
+    //(ms)
+    public long time_stamp;
 
     @Override
     public String toString() {
@@ -58,6 +60,7 @@ public class CodoonShoesMinuteModel implements Serializable {
                 ", out=" + outFootCount +
                 ", in=" + inFootCount +
                 ", cp=" + cachPower +
+                ", time_stamp=" + time_stamp +
                 '}';
     }
 }

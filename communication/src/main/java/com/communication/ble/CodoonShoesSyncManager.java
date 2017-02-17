@@ -91,6 +91,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     boolean isROrder = false;
 
     private UserCollection collection;
+
     /**
      * @param mContext
      * @param mCallBack can't be null
@@ -103,7 +104,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         runDatas = new SparseArray();
         stepDatas = new SparseArray();
         mParseHelper = new CodoonShoesParseHelper();
-        collection  = new UserCollection(mContext);
+        collection = new UserCollection(mContext);
     }
 
     @Override
@@ -156,10 +157,10 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     @Override
     public void writeDataToDevice(byte[] data) {
         super.writeDataToDevice(data);
-        if((data[1] & 0xff) == CodoonShoesCommand.CODE_ACCESSORY_BD){
+        if ((data[1] & 0xff) == CodoonShoesCommand.CODE_ACCESSORY_BD) {
 
             mTimeoutCheck.setTimeout(5000);
-        }else {
+        } else {
             mTimeoutCheck.setTimeout(1000);
 
         }
@@ -178,7 +179,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
     @Override
     protected void dealResponse(byte[] data) {
-        collection.recordAction( DataUtil.DebugPrint20(data));
+        collection.recordAction(DataUtil.DebugPrint20(data));
         if (null == data || data.length < 2) return;
         if ((data[0] & 0xff) == (0xAA)) {
             dealResCommand(data);
@@ -239,12 +240,12 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 //
 //                byteArrayOutputStream.reset();
 
-                if(isROrder){
+                if (isROrder) {
                     // 这一次的16贞已经读取完毕。读取上16贞
                     currRunFrame -= FRAME_BLOCK;
                     currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
 
-                }else {
+                } else {
                     currRunFrame += FRAME_BLOCK;
 
                 }
@@ -274,7 +275,6 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
     }
 
     /**
-     *
      * @param runDatas
      * @param start
      * @param end
@@ -282,13 +282,13 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
      */
     private boolean dealRunData(SparseArray runDatas, int start, int end) {
         CLog.i(TAG, "deal from " + start + " to " + end);
-        if(start > end) return false;
+        if (start > end) return false;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         for (int frameIndex = start; frameIndex < end; frameIndex++) {
             byte[] datas = (byte[]) runDatas.get(frameIndex);
 
             byteArrayOutputStream.write(datas, 0, datas.length);
-            if(CLog.isDebug){
+            if (CLog.isDebug) {
                 if (null != mICodoonShoesCallBack) mICodoonShoesCallBack.onResponse(
                         DataUtil.DebugPrint(datas));
             }
@@ -319,7 +319,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
 
             byteArrayOutputStream.write(datas, 0, datas.length);
 
-            if(CLog.isDebug){
+            if (CLog.isDebug) {
                 if (null != mICodoonShoesCallBack) mICodoonShoesCallBack.onResponse(
                         DataUtil.DebugPrintSix(datas));
             }
@@ -382,19 +382,19 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
         int len = data[2] & 0xff;
         byte[] resData = null;
         if (len > 0) {
-            if(resKey != BaseCommand.RES_READ_STEP_FRAME){
+            if (resKey != BaseCommand.RES_READ_STEP_FRAME) {
                 resData = Arrays.copyOfRange(data, 3, 3 + len);
-            }else {
+            } else {
                 resData = Arrays.copyOfRange(data, 5, 5 + len);
             }
         }
 
-        if (CLog.isDebug){
+        if (CLog.isDebug) {
             if (null != mICodoonShoesCallBack
                     && resKey != BaseCommand.RES_READ_STEP_FRAME)
                 mICodoonShoesCallBack.onResponse(
-                            DebugPrint20(resData)
-            );
+                        DebugPrint20(resData)
+                );
         }
         switch (resKey) {
             case BaseCommand.RES_BIND:
@@ -442,10 +442,10 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 CLog.i("ble", "total step frame:" + totalStepFrame);
 
                 if (totalStepFrame > 0) {
-                    if(isROrder){
+                    if (isROrder) {
                         curStepFrame = totalStepFrame - totalStepFrame % FRAME_BLOCK;
                         curStepFrame = (curStepFrame < 0) ? 0 : curStepFrame;
-                    }else {
+                    } else {
                         curStepFrame = 0;
                     }
 
@@ -483,10 +483,10 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                     if (checkTotalBlockReceive(stepDatas, curStepFrame, frame)) {
                         CLog.i(TAG, " =====cur block receive success ");
                         // 这一次的16贞已经读取完毕。读取上16贞
-                        if(isROrder){
+                        if (isROrder) {
                             curStepFrame -= FRAME_BLOCK;
                             curStepFrame = (curStepFrame < 0) ? 0 : curStepFrame;
-                        }else {
+                        } else {
                             curStepFrame += FRAME_BLOCK;
                         }
 
@@ -527,10 +527,10 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
                 runDatas.clear();
                 CLog.i("ble", "total run frame:" + totalRunFrame + " each framLen " + runDataEachLen);
                 if (totalRunFrame > 0) {
-                    if(isROrder){
+                    if (isROrder) {
                         currRunFrame = totalRunFrame - totalRunFrame % FRAME_BLOCK;
                         currRunFrame = (currRunFrame < 0) ? 0 : currRunFrame;
-                    }else {
+                    } else {
                         currRunFrame = 0;
                     }
 
@@ -568,8 +568,13 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
             case CodoonShoesCommand.RES_GET_ORIGIN_DATA:
                 ByteBuffer bf = ByteBuffer.wrap(resData).order(ByteOrder.BIG_ENDIAN);
                 String xyz = " x: %d, y: %d, z: %d";
-                String bc = String.format(xyz, bf.getShort(),bf.getShort(),bf.getShort());
+                String bc = String.format(xyz, bf.getShort(), bf.getShort(), bf.getShort());
                 mICodoonShoesCallBack.onResponse(bc);
+                break;
+            case CodoonShoesCommand.RES_STOMP_DATA:
+                ByteBuffer bbf = ByteBuffer.wrap(resData).order(ByteOrder.LITTLE_ENDIAN);
+                byte stomp_count = bbf.get();
+                mICodoonShoesCallBack.onResponse("跺脚：" + stomp_count);
                 break;
         }
 

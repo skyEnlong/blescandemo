@@ -1,248 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <TextView
-        android:text="发送数据内容"
+        android:id="@+id/textView"
         android:layout_width="371dp"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-         />
+        android:text="发送数据内容" />
 
     <TextView
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lines="2"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:id="@+id/textView2"
-         />
-
-    <TextView
-        android:layout_marginTop="5dp"
-        android:text="接收收数据内容"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:lines="3"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <TextView
         android:id="@+id/textView3"
-          />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="接收收数据内容" />
 
     <ScrollView
-        android:layout_width="match_parent"
         android:id="@+id/scrollView_rec"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_height="100dp">
+        android:layout_marginRight="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <TextView
+                android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="100dp"
-                android:id="@+id/textView4"
-                android:textIsSelectable="true"
-                />
+                android:textIsSelectable="true" />
         </LinearLayout>
 
     </ScrollView>
 
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <Button
-            android:text="读取记步数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/button8"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/button9" />
 
-        <Button
-            android:text="读取跑步数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button10"
-            android:layout_alignBaseline="@+id/button9"
-            android:layout_alignBottom="@+id/button9"
-            android:layout_alignLeft="@+id/button7"
-            android:layout_alignStart="@+id/button7" />
+            <Button
+                android:id="@+id/button9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/button8"
+                android:layout_centerHorizontal="true"
+                android:text="读取记步数据" />
 
-        <Button
-            android:text="读取总里程"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button11"
-            android:layout_below="@+id/button8"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="12dp" />
+            <Button
+                android:id="@+id/button10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button9"
+                android:layout_alignBottom="@+id/button9"
+                android:layout_alignLeft="@+id/button7"
+                android:layout_alignStart="@+id/button7"
+                android:text="读取跑步数据" />
 
-        <Button
-            android:text="升级测试"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button12"
-            android:layout_alignBaseline="@+id/button11"
-            android:layout_alignBottom="@+id/button11"
-            android:layout_alignLeft="@+id/button9"
-            android:layout_alignStart="@+id/button9" />
+            <Button
+                android:id="@+id/button11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button8"
+                android:layout_marginTop="12dp"
+                android:text="读取总里程" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button"
-            android:text="更新时间"
-            android:layout_alignBaseline="@+id/button3"
-            android:layout_alignBottom="@+id/button3"
-            android:layout_alignLeft="@+id/button6"
-            android:layout_alignStart="@+id/button6" />
+            <Button
+                android:id="@+id/button12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button11"
+                android:layout_alignBottom="@+id/button11"
+                android:layout_alignLeft="@+id/button9"
+                android:layout_alignStart="@+id/button9"
+                android:text="升级测试" />
 
-        <Button
-            android:text="绑定跑鞋"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button15"
-            android:layout_below="@+id/button11"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp" />
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button3"
+                android:layout_alignBottom="@+id/button3"
+                android:layout_alignLeft="@+id/button6"
+                android:layout_alignStart="@+id/button6"
+                android:text="更新时间" />
 
-        <Button
-            android:text="标定传感器"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button16"
-            android:layout_alignBaseline="@+id/button15"
-            android:layout_alignBottom="@+id/button15"
-            android:layout_alignLeft="@+id/button12"
-            android:layout_alignStart="@+id/button12" />
+            <Button
+                android:id="@+id/button15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button11"
+                android:layout_marginTop="5dp"
+                android:text="绑定跑鞋" />
 
-        <Button
-            android:text="读取版本号"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button4"
-            android:layout_alignBaseline="@+id/button"
-            android:layout_alignBottom="@+id/button"
-            android:layout_alignLeft="@+id/button7"
-            android:layout_alignStart="@+id/button7" />
+            <Button
+                android:id="@+id/button16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button15"
+                android:layout_alignBottom="@+id/button15"
+                android:layout_alignLeft="@+id/button12"
+                android:layout_alignStart="@+id/button12"
+                android:text="标定传感器" />
 
-        <Button
-            android:text="开始跑步"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
-            android:layout_alignBaseline="@+id/button16"
-            android:layout_alignBottom="@+id/button16"
-            android:layout_alignLeft="@+id/button13"
-            android:layout_alignStart="@+id/button13" />
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button"
+                android:layout_alignBottom="@+id/button"
+                android:layout_alignLeft="@+id/button7"
+                android:layout_alignStart="@+id/button7"
+                android:text="读取版本号" />
 
-        <Button
-            android:text="结束跑步"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:id="@+id/button17"
-            android:layout_below="@+id/button16"
-            android:layout_alignLeft="@+id/button16"
-            android:layout_alignStart="@+id/button16" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/button16"
+                android:layout_alignBottom="@+id/button16"
+                android:layout_alignLeft="@+id/button13"
+                android:layout_alignStart="@+id/button13"
+                android:text="开始跑步" />
 
-        <Button
-            android:text="清除数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button14"
-            android:layout_below="@+id/button15"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <Button
+                android:id="@+id/button17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button16"
+                android:layout_alignStart="@+id/button16"
+                android:layout_below="@+id/button16"
+                android:layout_marginTop="5dp"
+                android:text="结束跑步" />
 
-        <Button
-            android:text="扫描连接"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button3"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <Button
+                android:id="@+id/button14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button15"
+                android:layout_marginTop="5dp"
+                android:text="清除数据" />
 
-        <Button
-            android:text="准备数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button8"
-            android:layout_marginTop="5dp"
-            android:layout_below="@+id/button5"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:text="扫描连接" />
 
-        <Button
-            android:text="读取ID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button5"
-            android:layout_below="@+id/button3"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentStart="true" />
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button5"
+                android:layout_marginTop="5dp"
+                android:text="准备数据" />
 
-        <Button
-            android:text="读取跑步姿态数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button13"
-            android:layout_alignTop="@+id/button12"
-            android:layout_alignLeft="@+id/button10"
-            android:layout_alignStart="@+id/button10" />
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button3"
+                android:layout_marginTop="5dp"
+                android:text="读取ID" />
 
-        <Button
-            android:text="读取状态"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button6"
-            android:layout_below="@+id/button"
-            android:layout_marginTop="5dp"
+            <Button
+                android:id="@+id/button13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button10"
+                android:layout_alignStart="@+id/button10"
+                android:layout_alignTop="@+id/button12"
+                android:text="读取跑步姿态数据" />
 
-            android:layout_alignLeft="@+id/button9"
-            android:layout_alignStart="@+id/button9" />
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button9"
+                android:layout_alignStart="@+id/button9"
+                android:layout_below="@+id/button"
 
-        <Button
-            android:text="测试个人信息"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+                android:layout_marginTop="5dp"
+                android:text="读取状态" />
 
-            android:id="@+id/button7"
-            android:layout_below="@+id/button4"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            <Button
+                android:id="@+id/button7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
 
-        <Button
-            android:text="读取时间"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/button17"
-            android:layout_alignRight="@+id/button2"
-            android:layout_alignEnd="@+id/button2"
-            android:id="@+id/button18" />
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/button4"
+                android:layout_marginTop="5dp"
+                android:text="测试个人信息" />
 
-        <Button
-            android:text="读取三轴数据"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/button2"
-            android:layout_alignEnd="@+id/button2"
-            android:layout_below="@id/button18"
+            <Button
+                android:id="@+id/button18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/button17"
+                android:layout_alignEnd="@+id/button2"
+                android:layout_alignRight="@+id/button2"
+                android:text="读取时间" />
 
-            android:layout_marginTop="5dp"
-            android:id="@+id/button19" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/button19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/button2"
+                android:layout_alignRight="@+id/button2"
+                android:layout_below="@id/button18"
+
+                android:layout_marginTop="5dp"
+                android:text="读取三轴数据" />
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

@@ -233,7 +233,7 @@ public class DemoSyncManger implements ICodoonShoesCallBack, DeviceUpgradeCallba
     public void onDeviceDisconnect() {
         TextToSpeecher.getInstance(mContext).speechBluetoothLose();
         MsgEvent event = new MsgEvent();
-        event.msg = "连接已段开";
+        event.msg = "连接已断开";
         EventBus.getDefault().post(event);
     }
 

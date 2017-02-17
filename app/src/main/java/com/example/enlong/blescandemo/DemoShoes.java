@@ -12,12 +12,15 @@ import android.widget.Toast;
 import com.communication.bean.CodoonHealthDevice;
 import com.communication.bean.CodoonShoesMinuteModel;
 import com.communication.data.DataUtil;
+import com.communication.shoes.CodoonShoesCommand;
 import com.communication.shoes.CodoonShoesCommandHelper;
 import com.communication.shoes.CodoonShoesParseHelper;
 import com.communication.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,9 +78,20 @@ public class DemoShoes extends Activity implements View.OnClickListener {
                                 event.msg = "广播得到数据：" + data.toString();
                                 event.event_id = 1;
                                 EventBus.getDefault().post(event);
+                            } else {
+                                ByteBuffer byteBuffer = ByteBuffer.wrap(brod).order(ByteOrder.LITTLE_ENDIAN);
+                                byte startFlag = byteBuffer.get();
+                                byte cmd = byteBuffer.get();
+                                if (startFlag == 0xAA && cmd == CodoonShoesCommand.RES_STOMP_DATA) {
+                                    byte stomp_count = byteBuffer.get(3);
+                                    MsgEvent event = new MsgEvent();
+                                    event.msg = "跺脚：" + stomp_count;
+                                    event.event_id = 1;
+                                    EventBus.getDefault().post(event);
+                                }
                             }
                         } else {
-                            if(!ls.contains(msg.obj)){
+                            if (!ls.contains(msg.obj)) {
                                 ls.add((CodoonHealthDevice) msg.obj);
                             }
                         }

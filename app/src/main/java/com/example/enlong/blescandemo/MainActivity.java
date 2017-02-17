@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
-import glide.GlideImage;
 
 public class MainActivity extends AppCompatActivity implements ISearResult, View.OnClickListener {
 
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements ISearResult, View
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.scan_button){
-            new GlideImage<>(this).displayAnimationImage(R.raw.webp_gif, imageView, 0, 0);
+//            new GlideImage<>(this).displayAnimationImage(R.raw.webp_gif, imageView, 0, 0);
 //
 //            if(null != myBinder){
 //

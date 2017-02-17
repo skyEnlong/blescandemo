@@ -31,10 +31,11 @@ public class CodoonShoesParseHelper {
     private static final int FLAG_TOTAL = 0xfc;
 
     private static final String TAG = "ble_parse";
-
+    private static final long max_time_stamp = 2 * 24 * 3600 * 1000;
 
     /**
      * 解析详情跑步数据
+     *
      * @param bytes
      * @return
      */
@@ -45,7 +46,7 @@ public class CodoonShoesParseHelper {
 
         int parse_index = 0;
 
-        while (parse_index < bytes.length){
+        while (parse_index < bytes.length) {
             int start_index = findFlag(FLAG_START, bytes, parse_index, bytes.length);
             if (-1 == start_index) {
                 CLog.e(TAG, " not find start_tag");
@@ -75,12 +76,15 @@ public class CodoonShoesParseHelper {
             }
 
             CLog.i(TAG, "===========find flag_abstract========");
-
+            //转换为正分钟, 精确到s
+            long realMinStart = start / 60000 * 60000;
             //每分钟数据占位两贞
             for (int j = parse_index; j < absTotalIndex - FREAME_LENGTH; j += FREAME_LENGTH * 2) {
                 arr = Arrays.copyOfRange(bytes, j, j + FREAME_LENGTH * 2);
-                model.minutesModels.add(parseMinuteModel(arr));
-
+                CodoonShoesMinuteModel minuteModel = parseMinuteModel(arr);
+                minuteModel.time_stamp = realMinStart;
+                model.minutesModels.add(minuteModel);
+                realMinStart += 60000;
             }
             parse_index = absTotalIndex;
 
@@ -105,6 +109,19 @@ public class CodoonShoesParseHelper {
             CLog.i(TAG, "find end_time:" + endTIme);
             model.endDateTIme = endTIme;
 
+            //过滤数据
+            // 1.如果结束时间远远超过开始时间 该次跑步数据丢弃
+            if (model.endDateTIme - model.startDateTime > max_time_stamp) continue;
+            //2.如果某一分钟时间大于开始时间，该分钟以后的数据丢弃；
+            List<CodoonShoesMinuteModel> minuteModels = new ArrayList<>();
+            for (int i = 0; i < model.minutesModels.size(); i++) {
+                if (model.minutesModels.get(i).time_stamp + 6000 > model.endDateTIme) {
+                    break;
+                }
+                minuteModels.add(model.minutesModels.get(i));
+            }
+            model.minutesModels = minuteModels;
+
             models.add(model);
 
             parse_index += FREAME_LENGTH;
@@ -119,6 +136,7 @@ public class CodoonShoesParseHelper {
     /**
      * 找到对应的标志位，并且返回标志位结束后下一位index
      * 再使用的时候，最好自行减去标识长度
+     *
      * @param flag
      * @param allContent
      * @param start_index 查找开始范围
@@ -130,7 +148,7 @@ public class CodoonShoesParseHelper {
         return findFlagSeq(flag, allContent, start_index, end_index, false);
     }
 
-    private int findFlagSeq(int flag, byte[] allContent, int start_index, int end_index, boolean isNeedSeq){
+    private int findFlagSeq(int flag, byte[] allContent, int start_index, int end_index, boolean isNeedSeq) {
         int parse_index = start_index;
         int total = end_index / FREAME_LENGTH;
 
@@ -170,19 +188,17 @@ public class CodoonShoesParseHelper {
 
                 if (count_flag_end == FREAME_LENGTH) {
                     flag_parse = FLAG_END;
-                }else
-
-                if (count_flag_total == FREAME_LENGTH ) {
+                } else if (count_flag_total == FREAME_LENGTH) {
                     flag_parse = FLAG_TOTAL;
 
-                }else  if (count_flag_start == FREAME_LENGTH ) {
+                } else if (count_flag_start == FREAME_LENGTH) {
                     flag_parse = FLAG_START;
                 }
 
-                if(-1 != flag_parse){
-                    if(flag_parse == flag){
-                        return  parse_index;
-                    }else if(isNeedSeq){
+                if (-1 != flag_parse) {
+                    if (flag_parse == flag) {
+                        return parse_index;
+                    } else if (isNeedSeq) {
                         CLog.e(TAG, "tag not match,quit this sport... find:" + Integer.toHexString(flag) + " parse:" + Integer.toHexString(flag_parse));
                         return -1;
                     }
@@ -195,6 +211,7 @@ public class CodoonShoesParseHelper {
 
     /**
      * 解析详情数据每分钟的数据
+     *
      * @param arr
      * @return
      */
@@ -216,11 +233,12 @@ public class CodoonShoesParseHelper {
 
     /**
      * 解析每分钟跑步数据的百分比
+     *
      * @param arr
      * @return
      */
-    public CodoonShoesMinuteModel parsePercentsInBroad(byte[] arr){
-        if(null == arr || arr.length < 8) return null;
+    public CodoonShoesMinuteModel parsePercentsInBroad(byte[] arr) {
+        if (null == arr || arr.length < 8) return null;
 
         CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr).order(ByteOrder.LITTLE_ENDIAN);
@@ -238,11 +256,12 @@ public class CodoonShoesParseHelper {
 
     /**
      * 解析每分钟跑步数据的百分比
+     *
      * @param arr
      * @return
      */
-    public CodoonShoesMinuteModel parseMinutePercents(byte[] arr){
-        if(null == arr || arr.length < 8) return null;
+    public CodoonShoesMinuteModel parseMinutePercents(byte[] arr) {
+        if (null == arr || arr.length < 8) return null;
 
         CodoonShoesMinuteModel model = new CodoonShoesMinuteModel();
         ByteBuffer byteBuffer = ByteBuffer.wrap(arr);
@@ -259,9 +278,9 @@ public class CodoonShoesParseHelper {
     }
 
 
-
     /**
      * 解析汇总数据
+     *
      * @param model
      * @param arr
      */
@@ -274,14 +293,16 @@ public class CodoonShoesParseHelper {
         model.avgHoldTime = byteBuffer.getShort() & 0x00ffff;
         model.flyTime = byteBuffer.getShort() & 0x00ffff;
         /**here to parse avpace**/
-        int km =byteBuffer.getShort() & 0x00ffff;;
-        if(km > 0) model.paces = new ArrayList<>();
+        int km = byteBuffer.getShort() & 0x00ffff;
+        ;
+        if (km > 0) model.paces = new ArrayList<>();
         try {
-            for(int i =0; i < km; i++){
-                CLog.i(TAG, "parse  pace of km :" + i  + " total is " + km);
+            for (int i = 0; i < km; i++) {
+                CLog.i(TAG, "parse  pace of km :" + i + " total is " + km);
                 model.paces.add(Long.valueOf(byteBuffer.getShort() & 0x00ffff));
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         CLog.i(TAG, model.toString());
     }
@@ -289,6 +310,7 @@ public class CodoonShoesParseHelper {
 
     /**
      * 解析跑鞋状态
+     *
      * @param bytes
      * @return
      */
@@ -310,7 +332,7 @@ public class CodoonShoesParseHelper {
      * @param arrays
      * @return
      */
-    public  long getSysTime(byte[] arrays) {
+    public long getSysTime(byte[] arrays) {
         Calendar mCalendar = Calendar.getInstance();
         int year = 0;
         int month = 0;
@@ -351,12 +373,13 @@ public class CodoonShoesParseHelper {
 
     /**
      * 找到开始状态的帧数
+     *
      * @param datas
      * @return
      */
-    public int findStartTags(byte[] datas){
-        if(null == datas) return  -1;
-        int result = findFlag(FLAG_START, datas, 0 , datas.length);
+    public int findStartTags(byte[] datas) {
+        if (null == datas) return -1;
+        int result = findFlag(FLAG_START, datas, 0, datas.length);
 
         return result == -1 ? -1 : (result - FREAME_LENGTH) / FREAME_LENGTH;
 
