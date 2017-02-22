@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:overrideLibrary="com.example.webpdecoder"
-    package="com.example.enlong.blescandemo">
+    package="com.example.enlong.blescandemo"
+    tools:overrideLibrary="com.example.webpdecoder">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -12,17 +12,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
-    <uses-permission
-        android:name="android.permission.READ_SYNC_SETTINGS"/>
-    <uses-permission
-        android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-    <uses-permission
-        android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-"
+    "
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,18 +27,22 @@
         android:theme="@style/AppTheme"
         tools:replace="icon,label,theme">
 
-        <activity android:name=".DemoShoes" android:screenOrientation="portrait">
+        <activity
+            android:name=".DemoShoes"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DemoUnion" android:screenOrientation="portrait">
+        <activity
+            android:name=".DemoUnion"
+            android:screenOrientation="portrait">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
@@ -50,13 +51,15 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
-        <service android:name=".SearchService" android:exported="true">
+        <service
+            android:name=".SearchService"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.example.enlong.blescandemo.SearchService" />
             </intent-filter>
@@ -90,13 +93,14 @@
             </intent-filter>
         </service>
 
-        <service android:name=".AccountAuthenticatorService"
-            android:process=":live"
-            >
+        <service
+            android:name=".AccountAuthenticatorService"
+            android:process=":live">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator"
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
 
@@ -104,7 +108,7 @@
             android:name=".StubProvider"
             android:authorities="com.example.android.datasync.provider"
             android:exported="false"
-            android:syncable="true"/>
+            android:syncable="true" />
     </application>
 
 </manifest>

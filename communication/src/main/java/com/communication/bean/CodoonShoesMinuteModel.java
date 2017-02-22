@@ -51,6 +51,11 @@ public class CodoonShoesMinuteModel implements Serializable {
     //(ms)
     public long time_stamp;
 
+    /**
+     * 跺脚次数  0-255循环
+     */
+    public int stomp_count;
+
     @Override
     public String toString() {
         return "{" +
@@ -61,6 +66,7 @@ public class CodoonShoesMinuteModel implements Serializable {
                 ", in=" + inFootCount +
                 ", cp=" + cachPower +
                 ", time_stamp=" + time_stamp +
+                ", stomp_count=" + stomp_count +
                 '}';
     }
 }

@@ -248,6 +248,7 @@ public class CodoonShoesParseHelper {
         model.frontOnStep = byteBuffer.get() & 0xff;
         model.backOnStep = byteBuffer.get() & 0xff;
         model.cachPower = (byteBuffer.getShort() & 0x00ffff) / 10.0f;
+        model.stomp_count = byteBuffer.get() & 0xff;
 
         CLog.i(TAG, model.toString());
 

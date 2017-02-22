@@ -574,7 +574,7 @@ public class CodoonShoesSyncManager extends BaseDeviceSyncManager {
             case CodoonShoesCommand.RES_STOMP_DATA:
                 ByteBuffer bbf = ByteBuffer.wrap(resData).order(ByteOrder.LITTLE_ENDIAN);
                 byte stomp_count = bbf.get();
-                mICodoonShoesCallBack.onResponse("跺脚：" + stomp_count);
+                mICodoonShoesCallBack.onResponse("跺脚 stomp_count：" + stomp_count);
                 break;
         }
 

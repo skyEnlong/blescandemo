@@ -71,42 +71,28 @@ public class DemoShoes extends Activity implements View.OnClickListener {
                         if (isStartSport) {
                             CodoonHealthDevice dev = (CodoonHealthDevice) msg.obj;
                             DataUtil.DebugPrint(dev.manufacturer);
-                            byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 21);
+                            if (!dev.address.equals(ls.get(0).address)) return;
+                            if (dev.manufacturer.length < 22) return;
+                            byte[] brod = Arrays.copyOfRange(dev.manufacturer, 13, 22);
                             CodoonShoesMinuteModel data = parseHelper.parsePercentsInBroad(brod);
                             if (null != data) {
                                 MsgEvent event = new MsgEvent();
-                                event.msg = "广播得到数据：" + data.toString();
-                                event.event_id = 1;
+                                event.msg = "广播的数据：" + data.toString();
+//                                event.event_id = 1;
                                 EventBus.getDefault().post(event);
-                            } else {
-                                ByteBuffer byteBuffer = ByteBuffer.wrap(brod).order(ByteOrder.LITTLE_ENDIAN);
-                                byte startFlag = byteBuffer.get();
-                                byte cmd = byteBuffer.get();
-                                if (startFlag == 0xAA && cmd == CodoonShoesCommand.RES_STOMP_DATA) {
-                                    byte stomp_count = byteBuffer.get(3);
-                                    MsgEvent event = new MsgEvent();
-                                    event.msg = "跺脚：" + stomp_count;
-                                    event.event_id = 1;
-                                    EventBus.getDefault().post(event);
-                                }
                             }
                         } else {
                             if (!ls.contains(msg.obj)) {
                                 ls.add((CodoonHealthDevice) msg.obj);
                             }
                         }
-
-
                         break;
-
                     case MSG_CONNECT:
                         scanMananfer.stopScan();
                         if (ls.size() == 0) {
-
                             Toast.makeText(DemoShoes.this, "没有搜索到设备！", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
                         Collections.sort(ls);
                         connectDevice(ls.get(0));
                         break;
@@ -334,7 +320,6 @@ public class DemoShoes extends Activity implements View.OnClickListener {
             }
         } else {
             sendText.setText(event.msg);
-
         }
 
     }
